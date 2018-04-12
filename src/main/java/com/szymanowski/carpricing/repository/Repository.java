@@ -1,4 +1,4 @@
-package com.example.demo.repository;
+package com.szymanowski.carpricing.repository;
 
 import org.springframework.data.repository.CrudRepository;
 
@@ -6,6 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 // This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
 // CRUD refers Create, Read, Update, Delete
 
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface Repository extends CrudRepository<User, Long> {
 
 }
