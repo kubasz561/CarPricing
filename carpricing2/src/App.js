@@ -10,7 +10,17 @@ class App extends Component {
         this.state = {
             marka: "BMW",
             model: "Z4",
-            year: 2004
+            year: 2004,
+            fuel: "benzyna",
+            mileage: 100000,
+            engineCapacity: 2000,
+            power: 120,
+            color: "Czarny",
+            type: "sedan",
+            isNew: false,
+            hadAccident: true,
+            isFirstOwner: false,
+            description: "...opis"
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -81,6 +91,98 @@ class App extends Component {
                         <option value="1986">1986</option>
                         <option value="1985">1985</option>
                     </select>
+                    <br />
+                    <label>
+                        Rodzaj paliwa:
+                    </label>
+                    <select name="fuel" value={this.state.fuel} onChange={this.handleInputChange}>
+                        <option value="benzyna">benzyna</option>
+                        <option value="diesel">diesel</option>
+                        <option value="LPG">LPG</option>
+                    </select>
+                    <br />
+                    <label>
+                        Przebieg:
+                        <input
+                            name="mileage"
+                            type="text"
+                            value={this.state.mileage}
+                            onChange={this.handleInputChange} />
+                    </label>
+                    <br />
+                    <br />
+                    <label>
+                        Pojemnosc:
+                        <input
+                            name="engineCapacity"
+                            type="text"
+                            value={this.state.engineCapacity}
+                            onChange={this.handleInputChange} />
+                    </label>
+                    <br />
+                    <label>
+                        Mpc:
+                        <input
+                            name="power"
+                            type="text"
+                            value={this.state.power}
+                            onChange={this.handleInputChange} />
+                    </label>
+                    <br />
+                    <label>
+                        Typ nadwozia:
+                    </label>
+                    <select name="type" value={this.state.type} onChange={this.handleInputChange}>
+                        <option value="coupe">coupe</option>
+                        <option value="hatchback">hatchback</option>
+                        <option value="sedan">sedan</option>
+                        <option value="cabrio">cabrio</option>
+                        <option value="cabrio">cabrio</option>
+                    </select>
+                    <br />
+                    <label>
+                        Kolor:
+                        <input
+                            name="color"
+                            type="text"
+                            value={this.state.color}
+                            onChange={this.handleInputChange} />
+                    </label>
+                    <br />
+                    <label>
+                        Nowy:
+                        <input
+                            name="isNew"
+                            type="checkbox"
+                            value={this.state.isNew}
+                            onChange={this.handleInputChange} />
+                    </label>
+                    <br />
+                    <label>
+                        Bezwypadkowy:
+                        <input
+                            name="hadAccident"
+                            type="checkbox"
+                            value={this.state.hadAccident}
+                            onChange={this.handleInputChange} />
+                    </label>
+                    <br />
+                    <label>
+                        Piewrszy właściciel:
+                        <input
+                            name="isFirstOwner"
+                            type="checkbox"
+                            value={this.state.isFirstOwner}
+                            onChange={this.handleInputChange} />
+                    </label>
+                    <br />
+                    <textarea
+                        name="description"
+                        value={this.state.description}
+                        onChange={this.handleInputChange}
+                        >
+                        ...opis
+                    </textarea>
                     <br />
                     <input type="submit" value="Submit"/>
                 </form>

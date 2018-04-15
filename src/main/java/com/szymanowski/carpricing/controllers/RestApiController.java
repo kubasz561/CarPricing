@@ -1,6 +1,7 @@
 package com.szymanowski.carpricing.controllers;
 
-import com.szymanowski.carpricing.dto.SearchForm;
+import com.szymanowski.carpricing.dto.CarData;
+import com.szymanowski.carpricing.repository.Adverts;
 import com.szymanowski.carpricing.services.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ public class RestApiController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public List<String> search(SearchForm form) {
+    public List<String> search(CarData form) {
+        Adverts clientCar = new Adverts();
 
         return searchService.search(form);
 

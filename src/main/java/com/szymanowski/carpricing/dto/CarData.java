@@ -1,6 +1,6 @@
 package com.szymanowski.carpricing.dto;
 
-public class SearchForm {
+public class CarData {
 
     private String marka;
     private String model;
@@ -19,7 +19,7 @@ public class SearchForm {
 
     private String description;
 
-    public SearchForm() {
+    public CarData() {
     }
 
 

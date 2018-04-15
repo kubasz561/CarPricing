@@ -1,9 +1,6 @@
 package com.szymanowski.carpricing.repository;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Adverts {
@@ -12,10 +9,11 @@ public class Adverts {
     private Integer id;
 
     private String name;
+    private Integer price;
+
     private String make;
     private String model;
 
-    private Integer price;
     private Integer year;
     private Integer mileage;
     private Integer engineCapacity;
@@ -28,7 +26,7 @@ public class Adverts {
     private Boolean isNew;
     private Boolean hadAccident;
     private Boolean isFirstOwner;
-
+    @Column(columnDefinition = "LONGBLOB")
     private String description;
 
     public Integer getId() {

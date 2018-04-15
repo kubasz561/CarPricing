@@ -1,6 +1,6 @@
 package com.szymanowski.carpricing.services;
 
-import com.szymanowski.carpricing.dto.SearchForm;
+import com.szymanowski.carpricing.dto.CarData;
 import com.szymanowski.carpricing.populator.AdvertParser;
 import com.szymanowski.carpricing.repository.Adverts;
 import com.szymanowski.carpricing.repository.AdvertsRepository;
@@ -32,7 +32,7 @@ public class SearchService {
 
     //https://www.otomoto.pl/osobowe/bmw/seria-3/?search%5Bnew_used%5D=on;
     //https://www.otomoto.pl/osobowe/bmw/seria-3/od-2010/?search%5Bfilter_float_year%3Ato%5D=2010&search%5Bnew_used%5D=on
-    public List<String> search(SearchForm form){
+    public List<String> search(CarData form){
         String url;
         if (form.getYear() != null) {
             url = BASE + form.getMarka() + "/" + form.getModel() + "/od-" + form.getYear() + YEAR_MID + form.getYear() + "$" + END;
@@ -46,22 +46,25 @@ public class SearchService {
             Elements links = doc.getElementsByClass("offer-item__photo-link");
             List<String> hrefs = links.stream().map(a->a.attributes()).map(a->a.get("href")).collect(Collectors.toList());
 
-            //TEMPORARY FOR TEST
-            Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
-            Adverts advert = new Adverts();
-            advertParser.populate(advertDoc, advert);
-
-            /*hrefs.forEach( href -> {
-                try {
-                    Document advertDoc = Jsoup.connect(href).get();
-                    Adverts advert = new Adverts();
-                    advertParser.populate(advertDoc, advert);
-                    advertsRepository.save(advert);
-                } catch (IOException e) {
-                    LOG.info(e.getMessage());
-                }
-            });*/
-
+            int ONE_ADVERT_ONLY = 1;
+            if(ONE_ADVERT_ONLY == 1) {
+                //TEMPORARY FOR TEST
+                Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
+                Adverts advert = new Adverts();
+                advertParser.populate(advertDoc, advert);
+                advertsRepository.save(advert);
+            } else {
+                hrefs.forEach(href -> {
+                    try {
+                        Document advertDoc = Jsoup.connect(href).get();
+                        Adverts advert = new Adverts();
+                        advertParser.populate(advertDoc, advert);
+                        advertsRepository.save(advert);
+                    } catch (IOException e) {
+                        LOG.info(e.getMessage());
+                    }
+                });
+            }
             //test response
             Elements prices = doc.getElementsByClass("offer-price__number");
             return prices.stream().map(Element::text).collect(Collectors.toList());
