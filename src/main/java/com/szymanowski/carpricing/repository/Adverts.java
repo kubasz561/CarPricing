@@ -26,7 +26,7 @@ public class Adverts {
     private Boolean isNew;
     private Boolean hadAccident;
     private Boolean isFirstOwner;
-    @Column(columnDefinition = "LONGBLOB")
+    @Column(length = 4096)
     private String description;
 
     public Integer getId() {

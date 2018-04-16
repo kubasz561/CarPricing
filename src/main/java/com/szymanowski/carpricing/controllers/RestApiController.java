@@ -25,7 +25,7 @@ public class RestApiController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public List<String> search(CarData form) {
+    public List<Adverts> search(CarData form) {
         Adverts clientCar = new Adverts();
 
         return searchService.search(form);

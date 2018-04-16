@@ -56,7 +56,7 @@ public class AdvertParser {
         target.setHadAccident(keys.containsKey("Bezwypadkowy"));
         target.setFuel(keys.get("Rodzaj paliwa"));
         if(keys.containsKey("Pojemność skokowa")) {
-            target.setEngineCapacity(Integer.parseInt(keys.get("Pojemność skokowa").substring(0,4).replaceAll("[\\D]", "")));
+            target.setEngineCapacity(Integer.parseInt(keys.get("Pojemność skokowa").substring(0,5).replaceAll("[\\D]", "")));
         } else {
             //
         }
