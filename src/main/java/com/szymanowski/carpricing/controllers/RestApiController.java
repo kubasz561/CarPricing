@@ -1,7 +1,9 @@
 package com.szymanowski.carpricing.controllers;
 
 import com.szymanowski.carpricing.dto.CarData;
+import com.szymanowski.carpricing.dto.ChartDTO;
 import com.szymanowski.carpricing.repository.Adverts;
+import com.szymanowski.carpricing.services.ApproximationService;
 import com.szymanowski.carpricing.services.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ public class RestApiController {
     private static final Logger LOG = Logger.getLogger("RestApiController");
     @Autowired
     SearchService searchService;
+    @Autowired
+    ApproximationService approximationService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String index() {
@@ -25,10 +29,12 @@ public class RestApiController {
     }
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public List<Adverts> search(CarData form) {
+    public List<ChartDTO> search(CarData form) {
         Adverts clientCar = new Adverts();
+        List<Adverts> adverts = searchService.searchGolf(form);
 
-        return searchService.search(form);
+       // return searchService.search(form);
+        return approximationService.approximate(adverts);
 
     }
 }

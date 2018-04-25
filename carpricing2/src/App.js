@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import $ from 'jquery';
 import './App.css';
 import SelectYear from './components/SelectYear';
+import Plot from 'react-plotly.js';
 
 class App extends Component {
     constructor(props) {
@@ -20,7 +21,8 @@ class App extends Component {
             isNew: false,
             hadAccident: true,
             isFirstOwner: false,
-            description: "...opis"
+            description: "...opis",
+            response: null
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -186,6 +188,25 @@ class App extends Component {
                     <br />
                     <input type="submit" value="Submit"/>
                 </form>
+                {this.state.response && this.state.response.map( chart =>  <Plot
+                    data={[
+                        {
+                            x: chart.advertX,
+                            y: chart.advertY,
+                            type: 'scatter',
+                            mode: 'markers',
+                            marker: {color: 'red', size: 12}
+                        },
+                        {
+                            x: chart.advertX,
+                            y: chart.regressY,
+                            type: 'scatter',
+                            mode: 'lines',
+                            marker: {color: 'blue'}
+                        }
+                    ]}
+                    layout={ {width: 800, height: 600, title: chart.type} }
+                />)}
             </div>
         );
     }
@@ -202,12 +223,13 @@ class App extends Component {
     submit(e){
         console.log("SUBMIT")
         e.preventDefault();
+        let _this2= this;
         $.ajax({
             url: "/api/search",
             data:  this.state,
             method: 'POST',
             success: function (result) {
-                console.log("RESPONSE: " + result);
+                _this2.setState({response:result});
             }
         });
     }

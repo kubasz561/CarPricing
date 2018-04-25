@@ -33,6 +33,7 @@ public class SearchService {
 
     //https://www.otomoto.pl/osobowe/bmw/seria-3/?search%5Bnew_used%5D=on;
     //https://www.otomoto.pl/osobowe/bmw/seria-3/od-2010/?search%5Bfilter_float_year%3Ato%5D=2010&search%5Bnew_used%5D=on
+    //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
     public List<Adverts> search(CarData form){
         String url;
         if (form.getYear() != null) {
@@ -71,6 +72,41 @@ public class SearchService {
                 });
             }
             //test response
+
+            return adverts;
+        } catch (IOException e) {
+            LOG.info(e.getMessage());
+        }
+        return null;
+    }
+    //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
+    public List<Adverts> searchGolf(CarData form){
+        String url ="https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&" + form.getMarka();
+
+        try {
+            Document doc = Jsoup.connect(url).get();
+
+             Elements links = doc.getElementsByClass("offer-item__price");
+
+            List<Adverts> adverts = new ArrayList<>();
+
+            for (int i = 0 ; i< links.size();i++ ) {
+                List<String> params = doc.getElementsByClass("offer-item__params").get(i).childNodes().stream().filter(a->a instanceof Element).map(a->(Element)a).map(a->a.text()).collect(Collectors.toList());
+
+                if (links.get(i) != null && params.get(0) != null && params.get(1) != null) {
+                    Adverts advert = new Adverts();
+                    advert.setMake("Volkswagen");
+                    advert.setModel("Golf V");
+                    advert.setPrice(Integer.parseInt(links.get(i).text().replaceAll("[\\D]", "")));
+                    advert.setYear(Integer.parseInt(params.get(0)));
+                    advert.setMileage(Integer.parseInt(params.get(1).replaceAll("[\\D]", "")));
+                    /*advert.setEngineCapacity(Integer.parseInt(params.get(2).substring(0, params.get(3).length() - 2).replaceAll("[\\D]", "")));
+                    advert.setFuel(params.get(3));*/
+                    adverts.add(advert);
+                    advertsRepository.save(advert);
+
+                }
+            }
 
             return adverts;
         } catch (IOException e) {
