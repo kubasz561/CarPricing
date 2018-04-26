@@ -10,7 +10,7 @@ class App extends Component {
         super(props);
         this.state = {
             marka: "Volkswagen",
-            model: "Golf V",
+            model: "Golf",
             year: 2004,
             fuel: "benzyna",
             mileage: 100000,
@@ -188,37 +188,27 @@ class App extends Component {
                     <br />
                     <input type="submit" value="Submit"/>
                 </form>
-                {this.state.response && this.state.response.map( chart =>  <Plot
-                    data={[
-                        {
-                            x: chart.advertX,
-                            y: chart.advertY,
-                            type: 'scatter',
-                            mode: chart.mainChartMode,
-                            marker: {color: 'red', size: 12}
-                        },
-                        {
-                            x: chart.advertX,
-                            y: chart.regressY,
-                            type: 'scatter',
-                            mode: chart.approxChartMode,
-                            marker: {color: 'blue'}
-                        }
-                    ]}
-                    layout={ {width: 800, height: 600, title: chart.type} }
-                />)}
-                <Plot
-                    data={[
-                        {
-                            x: ["a","ab","bd"],
-                            y: [1,2,3],
-                            type: 'scatter',
-                            mode: 'markers',
-                            marker: {color: 'red', size: 12}
-                        }
-                    ]}
-                    layout={ {width: 800, height: 600, title: "KOLOR"} }
-                />
+                {this.state.response && this.state.response.map(chart =>
+                    <Plot
+                        data={[
+                            {
+                                x: chart.advertX,
+                                y: chart.advertY,
+                                type: 'scatter',
+                                mode: chart.mainChartMode,
+                                marker: {color: 'red', size: 12}
+                            },
+                            {
+                                x: chart.regressX,
+                                y: chart.regressY,
+                                type: 'scatter',
+                                mode: chart.approxChartMode,
+                                marker: {color: 'blue'}
+                            }
+                        ]}
+                        layout={{width: 800, height: 600, title: chart.type}}
+                    />)}
+
             </div>
         );
     }

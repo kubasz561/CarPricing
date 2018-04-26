@@ -53,15 +53,15 @@ public class AdvertParser {
         target.setNew("Nowy".equals(keys.get("Stan")));
         target.setType(keys.get("Typ"));
         target.setFirstOwner(keys.containsKey("Pierwszy właściciel"));
-        target.setHadAccident(keys.containsKey("Bezwypadkowy"));
+        target.setHadAccident(!keys.containsKey("Bezwypadkowy"));
         target.setFuel(keys.get("Rodzaj paliwa"));
         if(keys.containsKey("Pojemność skokowa")) {
             target.setEngineCapacity(Integer.parseInt(keys.get("Pojemność skokowa").substring(0,5).replaceAll("[\\D]", "")));
         } else {
             //
         }
-       // target.setDescription(description.length() > 100 ? description.substring(0,100) : description);
-        target.setDescription( description);
+        target.setDescription(description.length() > 4001 ? description.substring(0,4000) : description);
+        //target.setDescription( description);
     }
 
 }

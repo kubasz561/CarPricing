@@ -31,6 +31,7 @@ public class RestApiController {
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public List<ChartDTO> search(CarData form) {
         Adverts clientCar = new Adverts();
+       // searchService.search(form);
         List<Adverts> adverts = searchService.searchInDatabase(form);
 
        // return searchService.search(form);
