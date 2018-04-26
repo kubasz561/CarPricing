@@ -9,8 +9,8 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            marka: "BMW",
-            model: "Z4",
+            marka: "Volkswagen",
+            model: "Golf V",
             year: 2004,
             fuel: "benzyna",
             mileage: 100000,
@@ -194,19 +194,31 @@ class App extends Component {
                             x: chart.advertX,
                             y: chart.advertY,
                             type: 'scatter',
-                            mode: 'markers',
+                            mode: chart.mainChartMode,
                             marker: {color: 'red', size: 12}
                         },
                         {
                             x: chart.advertX,
                             y: chart.regressY,
                             type: 'scatter',
-                            mode: 'lines',
+                            mode: chart.approxChartMode,
                             marker: {color: 'blue'}
                         }
                     ]}
                     layout={ {width: 800, height: 600, title: chart.type} }
                 />)}
+                <Plot
+                    data={[
+                        {
+                            x: ["a","ab","bd"],
+                            y: [1,2,3],
+                            type: 'scatter',
+                            mode: 'markers',
+                            marker: {color: 'red', size: 12}
+                        }
+                    ]}
+                    layout={ {width: 800, height: 600, title: "KOLOR"} }
+                />
             </div>
         );
     }

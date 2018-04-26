@@ -1,15 +1,32 @@
 package com.szymanowski.carpricing.dto;
 
 
+import java.util.List;
 
 public class ChartDTO{
 
     private String type;
+    private String mainChartMode;
 
+    public String getMainChartMode() {
+        return mainChartMode;
+    }
 
-    private int[] advertX;
-    private int[] advertY;
-    private double[] regressY;
+    public void setMainChartMode(String mainChartMode) {
+        this.mainChartMode = mainChartMode;
+    }
+
+    public String getApproxChartMode() {
+        return approxChartMode;
+    }
+
+    public void setApproxChartMode(String approxChartMode) {
+        this.approxChartMode = approxChartMode;
+    }
+
+    private String approxChartMode;
+
+    private  List<Integer> advertY;
 
     public String getType() {
         return type;
@@ -19,27 +36,24 @@ public class ChartDTO{
         this.type = type;
     }
 
-    public int[] getAdvertX() {
-        return advertX;
-    }
 
-    public void setAdvertX(int[] advertX) {
-        this.advertX = advertX;
-    }
-
-    public int[] getAdvertY() {
+    public List<Integer> getAdvertY() {
         return advertY;
     }
 
-    public void setAdvertY(int[] advertY) {
+    public void setAdvertY(List<Integer> advertY) {
         this.advertY = advertY;
     }
 
-    public double[] getRegressY() {
+    public List<Double> getRegressY() {
         return regressY;
     }
 
-    public void setRegressY(double[] regressY) {
+    public void setRegressY(List<Double> regressY) {
         this.regressY = regressY;
     }
+
+    private  List<Double> regressY;
+
+
 }

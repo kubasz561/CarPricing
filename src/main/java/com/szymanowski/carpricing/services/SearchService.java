@@ -34,7 +34,7 @@ public class SearchService {
     //https://www.otomoto.pl/osobowe/bmw/seria-3/?search%5Bnew_used%5D=on;
     //https://www.otomoto.pl/osobowe/bmw/seria-3/od-2010/?search%5Bfilter_float_year%3Ato%5D=2010&search%5Bnew_used%5D=on
     //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
-    public List<Adverts> search(CarData form){
+    public List<Adverts> search(CarData form) {
         String url;
         if (form.getYear() != null) {
             url = BASE + form.getMarka() + "/" + form.getModel() + "/od-" + form.getYear() + YEAR_MID + form.getYear() + "$" + END;
@@ -46,12 +46,12 @@ public class SearchService {
             Document doc = Jsoup.connect(url).get();
 
             Elements links = doc.getElementsByClass("offer-item__photo-link");
-            List<String> hrefs = links.stream().map(a->a.attributes()).map(a->a.get("href")).collect(Collectors.toList());
+            List<String> hrefs = links.stream().map(a -> a.attributes()).map(a -> a.get("href")).collect(Collectors.toList());
 
             List<Adverts> adverts = new ArrayList<>();
 
             int ONE_ADVERT_ONLY = 1;
-            if(ONE_ADVERT_ONLY == 1) {
+            if (ONE_ADVERT_ONLY == 1) {
                 //TEMPORARY FOR TEST
                 Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
                 Adverts advert = new Adverts();
@@ -79,19 +79,20 @@ public class SearchService {
         }
         return null;
     }
+
     //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
-    public List<Adverts> searchGolf(CarData form){
-        String url ="https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&" + form.getMarka();
+    public List<Adverts> searchGolf(CarData form) {
+        String url = "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&" + form.getMarka();
 
         try {
             Document doc = Jsoup.connect(url).get();
 
-             Elements links = doc.getElementsByClass("offer-item__price");
+            Elements links = doc.getElementsByClass("offer-item__price");
 
             List<Adverts> adverts = new ArrayList<>();
 
-            for (int i = 0 ; i< links.size();i++ ) {
-                List<String> params = doc.getElementsByClass("offer-item__params").get(i).childNodes().stream().filter(a->a instanceof Element).map(a->(Element)a).map(a->a.text()).collect(Collectors.toList());
+            for (int i = 0; i < links.size(); i++) {
+                List<String> params = doc.getElementsByClass("offer-item__params").get(i).childNodes().stream().filter(a -> a instanceof Element).map(a -> (Element) a).map(a -> a.text()).collect(Collectors.toList());
 
                 if (links.get(i) != null && params.get(0) != null && params.get(1) != null) {
                     Adverts advert = new Adverts();
@@ -113,5 +114,9 @@ public class SearchService {
             LOG.info(e.getMessage());
         }
         return null;
+    }
+
+    public List<Adverts> searchInDatabase(CarData form) {
+        return advertsRepository.findByMakeAndModel(form.getMarka(), form.getModel());
     }
 }
