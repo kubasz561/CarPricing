@@ -185,6 +185,12 @@ class App extends Component {
                     <br />
                     <input type="submit" value="Submit"/>
                 </form>
+                <br />
+                {this.state.response && this.state.response.map(chart =>
+                    <div>
+                        {chart.r && <span>R: {chart.r}, R2: {chart.r2}, Significance {chart.significance}  </span>}
+                    </div>
+                )}
                 {this.state.response && this.state.response.map(chart =>
                     <div>
                         <Plot
@@ -206,7 +212,6 @@ class App extends Component {
                             ]}
                             layout={{width: 800, height: 600, title: chart.type}}
                         />
-                        <label>R: {chart.r}, R2: {chart.r2}, Significance {chart.significance}  </label>
                     </div>
                 )}
 

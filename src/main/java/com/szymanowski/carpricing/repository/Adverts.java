@@ -15,17 +15,19 @@ public class Adverts {
     private String model;
 
     private Integer year;
+
     private Integer mileage;
+
     private Integer engineCapacity;
     private Integer power;
-
     private String fuel;
+
     private String type;
     private String color;
-
     private Boolean isNew;
     private Boolean hadAccident;
     private Boolean isFirstOwner;
+
     @Column(length = 4096)
     private String description;
 
