@@ -11,7 +11,7 @@ class App extends Component {
         this.state = {
             marka: "Volkswagen",
             model: "Golf",
-            year: 2004,
+            year: 2005,
             fuel: "benzyna",
             mileage: 100000,
             engineCapacity: 2000,
@@ -34,11 +34,9 @@ class App extends Component {
             <div className="App">
                 <header className="App-header">
                     <img src={logo} className="App-logo" alt="logo" />
-                    <h1 className="App-title">Welcome to React</h1>
+                    <h1 className="App-title">Car Pricing</h1>
                 </header>
 
-                <button id="button1" onClick={this.getcontent}>Get External Content</button>
-                <button id="button2" onClick={this.createUser}>Create Database record</button>
                 <br />
                 <form onSubmit={this.submit}>
                     <label>
@@ -112,7 +110,6 @@ class App extends Component {
                             onChange={this.handleInputChange} />
                     </label>
                     <br />
-                    <br />
                     <label>
                         Pojemnosc:
                         <input
@@ -123,7 +120,7 @@ class App extends Component {
                     </label>
                     <br />
                     <label>
-                        Mpc:
+                        Moc:
                         <input
                             name="power"
                             type="text"
@@ -170,7 +167,7 @@ class App extends Component {
                     </label>
                     <br />
                     <label>
-                        Piewrszy właściciel:
+                        Pierwszy właściciel:
                         <input
                             name="isFirstOwner"
                             type="checkbox"
@@ -189,25 +186,29 @@ class App extends Component {
                     <input type="submit" value="Submit"/>
                 </form>
                 {this.state.response && this.state.response.map(chart =>
-                    <Plot
-                        data={[
-                            {
-                                x: chart.advertX,
-                                y: chart.advertY,
-                                type: 'scatter',
-                                mode: chart.mainChartMode,
-                                marker: {color: 'red', size: 12}
-                            },
-                            {
-                                x: chart.regressX,
-                                y: chart.regressY,
-                                type: 'scatter',
-                                mode: chart.approxChartMode,
-                                marker: {color: 'blue'}
-                            }
-                        ]}
-                        layout={{width: 800, height: 600, title: chart.type}}
-                    />)}
+                    <div>
+                        <Plot
+                            data={[
+                                {
+                                    x: chart.advertX,
+                                    y: chart.advertY,
+                                    type: 'scatter',
+                                    mode: chart.mainChartMode,
+                                    marker: {color: 'red', size: 12}
+                                },
+                                {
+                                    x: chart.regressX,
+                                    y: chart.regressY,
+                                    type: 'scatter',
+                                    mode: chart.approxChartMode,
+                                    marker: {color: 'blue'}
+                                }
+                            ]}
+                            layout={{width: 800, height: 600, title: chart.type}}
+                        />
+                        <label>R: {chart.r}, R2: {chart.r2}, Significance {chart.significance}  </label>
+                    </div>
+                )}
 
             </div>
         );
@@ -232,21 +233,6 @@ class App extends Component {
             method: 'POST',
             success: function (result) {
                 _this2.setState({response:result});
-            }
-        });
-    }
-    createUser(){
-        $.ajax({
-            url: "/demo/add?name=Andrew", success: function (result) {
-                console.log("RESPONSE: " + result);
-            }
-        });
-    }
-    getcontent(){
-        $.ajax({
-            url: "/api", success: function (result) {
-                console.log("RESPONSE get contet: " + result);
-                $("App").html(result);
             }
         });
     }

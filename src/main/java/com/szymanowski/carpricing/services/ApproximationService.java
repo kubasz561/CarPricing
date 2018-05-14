@@ -22,7 +22,7 @@ public class ApproximationService {
         List<ChartDTO> charts = new ArrayList<>();
 
         charts.add(mileageRegression(adverts));
-        charts.add(mileageNoAccidentRegression(adverts));
+       // charts.add(mileageNoAccidentRegression(adverts));
         charts.add(yearRegression(adverts));
         charts.add(powerRegression(adverts));
         charts.add(colorMean(adverts));
@@ -48,9 +48,8 @@ public class ApproximationService {
                     advertX.add(advert.getMileage());
                     advertY.add(advert.getPrice());
                 });
-
         getRegressionPoints(advertX,regressX,regressY, regression);
-        return createIntegerChartData("Mileage", advertX, advertY, regressX, regressY);
+        return createIntegerChartData("Mileage", advertX, advertY, regressX, regressY, regression);
     }
 
     private ChartDTO mileageNoAccidentRegression(List<Adverts> adverts) {
@@ -268,6 +267,14 @@ public class ApproximationService {
         chart.setRegressY(regressY);
         chart.setMainChartMode(ChartMode.POINT.getValue());
         chart.setApproxChartMode(ChartMode.LINE.getValue());
+        return chart;
+    }
+
+    private ChartDTO createIntegerChartData(String type, List<Integer> x, List<Integer> y, List<Integer> regressX, List<Double> regressY, SimpleRegression regression) {
+        IntegerChartDTO chart = (IntegerChartDTO) createIntegerChartData(type, x, y, regressX, regressY);
+        chart.setR(regression.getR());
+        chart.setR2(regression.getRSquare());
+        chart.setSignificance(regression.getSignificance());
         return chart;
     }
 
