@@ -32,6 +32,16 @@ public class IntegerChartDTO extends ChartDTO {
     private double significance;
     private List<Integer> advertX;
 
+    public Integer getFormX() {
+        return formX;
+    }
+
+    public void setFormX(Integer formX) {
+        this.formX = formX;
+    }
+
+    private Integer formX;
+
     public List<Integer> getRegressX() {
         return regressX;
     }

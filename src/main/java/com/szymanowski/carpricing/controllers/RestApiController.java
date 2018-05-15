@@ -4,6 +4,7 @@ import com.szymanowski.carpricing.dto.CarData;
 import com.szymanowski.carpricing.dto.ChartDTO;
 import com.szymanowski.carpricing.repository.Adverts;
 import com.szymanowski.carpricing.services.ApproximationService;
+import com.szymanowski.carpricing.services.DescriptionAnalyzerService;
 import com.szymanowski.carpricing.services.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,8 @@ public class RestApiController {
     SearchService searchService;
     @Autowired
     ApproximationService approximationService;
+    @Autowired
+    DescriptionAnalyzerService descriptionAnalyzerService;
 
     @RequestMapping(method = RequestMethod.GET)
     public String index() {
@@ -35,7 +38,8 @@ public class RestApiController {
         List<Adverts> adverts = searchService.searchInDatabase(form);
 
        // return searchService.search(form);
-        return approximationService.approximate(adverts);
+        descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
+        return approximationService.approximate(adverts, form);
 
     }
 }

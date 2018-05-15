@@ -55,5 +55,15 @@ public class ChartDTO{
 
     private  List<Double> regressY;
 
+    public Double getFormY() {
+        return formY;
+    }
+
+    public void setFormY(Double formY) {
+        this.formY = formY;
+    }
+
+    private Double formY;
+
 
 }

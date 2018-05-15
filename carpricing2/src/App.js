@@ -12,12 +12,12 @@ class App extends Component {
             marka: "Volkswagen",
             model: "Golf",
             year: 2005,
-            fuel: "benzyna",
-            mileage: 100000,
+            fuel: "Benzyna",
+            mileage: 150000,
             engineCapacity: 2000,
-            power: 120,
+            power: 200,
             color: "Czarny",
-            type: "sedan",
+            type: "Sedan",
             isNew: false,
             hadAccident: true,
             isFirstOwner: false,
@@ -96,9 +96,9 @@ class App extends Component {
                         Rodzaj paliwa:
                     </label>
                     <select name="fuel" value={this.state.fuel} onChange={this.handleInputChange}>
-                        <option value="benzyna">benzyna</option>
-                        <option value="diesel">diesel</option>
-                        <option value="LPG">LPG</option>
+                        <option value="benzyna">Benzyna</option>
+                        <option value="diesel">Diesel</option>
+                        <option value="LPG">Benzyna + LPG</option>
                     </select>
                     <br />
                     <label>
@@ -132,11 +132,11 @@ class App extends Component {
                         Typ nadwozia:
                     </label>
                     <select name="type" value={this.state.type} onChange={this.handleInputChange}>
-                        <option value="coupe">coupe</option>
-                        <option value="hatchback">hatchback</option>
-                        <option value="sedan">sedan</option>
-                        <option value="cabrio">cabrio</option>
-                        <option value="cabrio">cabrio</option>
+                        <option value="coupe">Coupe</option>
+                        <option value="hatchback">Kompakt</option>
+                        <option value="sedan">Sedan</option>
+                        <option value="cabrio">Cabrio</option>
+                        <option value="cabrio">Auta miejskie</option>
                     </select>
                     <br />
                     <label>
@@ -187,11 +187,7 @@ class App extends Component {
                 </form>
                 <br />
                 {this.state.response && this.state.response.map(chart =>
-                    <div>
-                        {chart.r && <span>R: {chart.r}, R2: {chart.r2}, Significance {chart.significance}  </span>}
-                    </div>
-                )}
-                {this.state.response && this.state.response.map(chart =>
+                <div>
                     <div>
                         <Plot
                             data={[
@@ -208,11 +204,24 @@ class App extends Component {
                                     type: 'scatter',
                                     mode: chart.approxChartMode,
                                     marker: {color: 'blue'}
+                                },
+                                {
+                                    x: [chart.formX],
+                                    y: [chart.formY],
+                                    type: 'scatter',
+                                    mode: chart.mainChartMode,
+                                    marker: {color: 'green', size: 15}
                                 }
                             ]}
                             layout={{width: 800, height: 600, title: chart.type}}
                         />
                     </div>
+                    <div>
+                    {chart.r && <span>R: {chart.r}, R2: {chart.r2} </span>}
+                    <br/>
+                    {chart.formY && <span>Parametr: {chart.type} Wartosc: {chart.formX}, Cena: {chart.formY} </span>}
+                    </div>
+                </div>
                 )}
 
             </div>
