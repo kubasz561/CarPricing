@@ -26,6 +26,7 @@ class App extends Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
         this.submit= this.submit.bind(this);
     }
 
@@ -153,8 +154,8 @@ class App extends Component {
                         <input
                             name="isNew"
                             type="checkbox"
-                            value={this.state.isNew}
-                            onChange={this.handleInputChange} />
+                            checked={this.state.isNew}
+                            onChange={this.handleCheckboxChange} />
                     </label>
                     <br />
                     <label>
@@ -162,8 +163,8 @@ class App extends Component {
                         <input
                             name="hadAccident"
                             type="checkbox"
-                            value={this.state.hadAccident}
-                            onChange={this.handleInputChange} />
+                            checked={this.state.hadAccident}
+                            onChange={this.handleCheckboxChange} />
                     </label>
                     <br />
                     <label>
@@ -171,8 +172,8 @@ class App extends Component {
                         <input
                             name="isFirstOwner"
                             type="checkbox"
-                            value={this.state.isFirstOwner}
-                            onChange={this.handleInputChange} />
+                            checked={this.state.isFirstOwner}
+                            onChange={this.handleCheckboxChange} />
                     </label>
                     <br />
                     <textarea
@@ -186,6 +187,9 @@ class App extends Component {
                     <input type="submit" value="Submit"/>
                 </form>
                 <br />
+                {this.state.response && this.state.response.map(chart =>
+                    chart.formY && <h3>Parametr: {chart.type} /// Wartosc: {chart.formX} /// Cena: {chart.formY } </h3>
+                )}
                 {this.state.response && this.state.response.map(chart =>
                 <div>
                     <div>
@@ -217,9 +221,9 @@ class App extends Component {
                         />
                     </div>
                     <div>
-                    {chart.r && <span>R: {chart.r}, R2: {chart.r2} </span>}
-                    <br/>
-                    {chart.formY && <span>Parametr: {chart.type} Wartosc: {chart.formX}, Cena: {chart.formY} </span>}
+                    {chart.r && <span>R: {chart.r} </span>}
+                    {chart.r && <br/>}
+                    {chart.formY && <h3>Parametr: {chart.type} /// Wartosc: {chart.formX} /// Cena: {chart.formY} </h3>}
                     </div>
                 </div>
                 )}
@@ -234,6 +238,14 @@ class App extends Component {
 
         this.setState({
             [name]: value
+        });
+    }
+    handleCheckboxChange (event) {
+        const target = event.target;
+        const name = target.name;
+
+        this.setState({
+            [name]:  !this.state[name]
         });
     }
 

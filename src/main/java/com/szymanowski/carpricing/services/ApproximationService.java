@@ -1,5 +1,6 @@
 package com.szymanowski.carpricing.services;
 
+import com.szymanowski.carpricing.Utils;
 import com.szymanowski.carpricing.constants.ChartMode;
 import com.szymanowski.carpricing.dto.CarData;
 import com.szymanowski.carpricing.dto.ChartDTO;
@@ -13,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.*;
+import java.util.List;
 
 @Service
 public class ApproximationService {
@@ -22,23 +24,26 @@ public class ApproximationService {
         List<ChartDTO> charts = new ArrayList<>();
 
         charts.add(mileageRegression(adverts, form.getMileage()));
-        charts.add(mileageNoAccidentRegression(adverts, form.getMileage()));
         charts.add(yearRegression(adverts, Integer.valueOf(form.getYear())));
-        charts.add(powerRegression(adverts, form.getPower()));
 
-        charts.add(yearmean(adverts, form.getYear()));
-        charts.add(engineMean(adverts));
-        charts.add(colorMean(adverts, form.getColor()));
-        charts.add(firstOwnerMean(adverts, form.getYear()+form.getFirstOwner()));
+        charts.add(engineMean(adverts, Utils.getEngineName(form)));
+
         charts.add(accidentMean(adverts, form.getYear()+form.getHadAccident()));
-        charts.add(typeMean(adverts,form.getType()));
-        charts.add(typeYearMean(adverts,form.getYear()+form.getType()));
+        charts.add(firstOwnerMean(adverts, form.getYear()+form.getIsFirstOwner()));
 
+        charts.add(colorMean(adverts, form.getColor()));
+        charts.add(colorYearMean(adverts, form.getYear()+form.getColor()));
+        charts.add(typeMean(adverts, form.getType()));
+        charts.add(typeYearMean(adverts,form.getYear()+form.getType()));
+/*
         charts.add(fuelMean(adverts));
         charts.add(powerMean(adverts,form.getPower().toString()+" KM"));
         charts.add(capacityMean(adverts));
-        //charts.add(yearMileageRegression(adverts));
-
+        charts.add(yearmean(adverts, form.getYear()));
+        charts.add(powerRegression(adverts, form.getPower()));
+        charts.add(mileageNoAccidentRegression(adverts, form.getMileage()));
+        charts.add(yearMileageRegression(adverts));
+*/
         return charts;
     }
 
@@ -62,26 +67,6 @@ public class ApproximationService {
         return createIntegerChartData("Mileage", advertX, advertY, regressX, regressY, formX, formY, regression);
     }
 
-    private ChartDTO mileageNoAccidentRegression(List<Adverts> adverts, Integer formX) {
-        SimpleRegression regression = new SimpleRegression();
-        List<Integer> advertX = new ArrayList<>();
-        List<Integer> advertY = new ArrayList<>();
-        List<Integer> regressX = new ArrayList<>();
-        List<Double> regressY = new ArrayList<>();
-
-        adverts.stream()
-                .filter(advert -> advert.getMileage() != null)
-                .filter(advert -> Boolean.TRUE.equals(advert.getHadAccident())) // tymczasowe odwrocenie znaczenia do czasu naprawy danych w bazie
-                .forEach(advert -> {
-                    regression.addData(advert.getMileage(), advert.getPrice());
-                    advertX.add(advert.getMileage());
-                    advertY.add(advert.getPrice());
-                });
-        Double formY = regression.predict(formX);
-
-        getRegressionPoints(advertX,regressX,regressY, regression);
-        return createIntegerChartData("Mileage no Accident", advertX, advertY, regressX, regressY, formX, formY, regression);
-    }
 
     private ChartDTO yearRegression(List<Adverts> adverts, Integer formX) {
         SimpleRegression regression = new SimpleRegression();
@@ -102,46 +87,7 @@ public class ApproximationService {
         Double formY = regression.predict(formX);
         return createIntegerChartData("Year", advertX, advertY, regressX, regressY, formX, formY, regression);
     }
-    private ChartDTO powerRegression(List<Adverts> adverts, Integer formX ) {
-        SimpleRegression regression = new SimpleRegression();
-        List<Integer> advertX = new ArrayList<>();
-        List<Integer> advertY = new ArrayList<>();
-        List<Integer> regressX = new ArrayList<>();
-        List<Double> regressY = new ArrayList<>();
 
-        adverts.stream()
-                .filter(advert -> advert.getPower() != null)
-                .forEach(advert -> {
-                    regression.addData(advert.getPower(), advert.getPrice());
-                    advertX.add(advert.getPower());
-                    advertY.add(advert.getPrice());
-                });
-        Double formY = regression.predict(formX);
-
-        getRegressionPoints(advertX,regressX,regressY, regression);
-        return createIntegerChartData("Power KM - regress", advertX, advertY, regressX, regressY, formX, formY, regression);
-    }
-
-    private ChartDTO yearmean(List<Adverts> adverts, String formX){
-        List<String> advertX = new ArrayList<>();
-        List<Integer> advertY = new ArrayList<>();
-        List<String> regressX = new ArrayList<>();
-        List<Double> regressY = new ArrayList<>();
-        MultiValueMap<String, Integer> colorPriceMap = new LinkedMultiValueMap<>();
-        Map<String, Double> means = new HashMap<>();
-
-        adverts.stream()
-                .filter(advert -> advert.getYear() != null)
-                .sorted(Comparator.comparing(Adverts::getYear))
-                .forEach(advert -> {
-                    colorPriceMap.add(advert.getYear().toString(), advert.getPrice());
-                    advertX.add(advert.getYear().toString());
-                    advertY.add(advert.getPrice());
-                });
-
-        Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        return createTextChartData("Year Mean",advertX, advertY, regressX, regressY, formX, formY);
-    }
     private ChartDTO colorMean(List<Adverts> adverts, String formX){
         List<String> advertX = new ArrayList<>();
         List<Integer> advertY = new ArrayList<>();
@@ -160,6 +106,26 @@ public class ApproximationService {
 
         Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
         return createTextChartData("Color",advertX, advertY, regressX, regressY, formX, formY);
+    }
+    private ChartDTO colorYearMean(List<Adverts> adverts, String formX){
+        List<String> advertX = new ArrayList<>();
+        List<Integer> advertY = new ArrayList<>();
+        List<String> regressX = new ArrayList<>();
+        List<Double> regressY = new ArrayList<>();
+        MultiValueMap<String, Integer> colorPriceMap = new LinkedMultiValueMap<>();
+        Map<String, Double> means = new HashMap<>();
+
+        adverts.stream()
+                .filter(advert -> advert.getColor() != null)
+                .sorted(Comparator.comparing(Adverts::getYear).thenComparing(Adverts::getColor))
+                .forEach(advert -> {
+                    colorPriceMap.add(advert.getYear()+advert.getColor(), advert.getPrice());
+                    advertX.add(advert.getYear()+advert.getColor());
+                    advertY.add(advert.getPrice());
+                });
+
+        Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
+        return createTextChartData("Color - Year",advertX, advertY, regressX, regressY, formX, formY);
     }
 
     private ChartDTO accidentMean(List<Adverts> adverts, String formX){
@@ -252,7 +218,7 @@ public class ApproximationService {
 
 
 
-    private ChartDTO engineMean(List<Adverts> adverts){
+    private ChartDTO engineMean(List<Adverts> adverts, String formX){
         List<String> advertX = new ArrayList<>();
         List<Integer> advertY = new ArrayList<>();
         List<String> regressX = new ArrayList<>();
@@ -266,12 +232,9 @@ public class ApproximationService {
                 .filter(advert -> advert.getPower() != null)
                 .filter(advert -> advert.getEngineCapacity() != null)
                 .sorted(Comparator.comparing(Adverts::getPower).thenComparing(Adverts::getEngineCapacity).thenComparing(Adverts::getFuel))
-                .forEach(advert -> {
-                    double capacityRounded = Math.round((double)advert.getEngineCapacity()/100);
-                    String engine = capacityRounded + "dm3, " + advert.getPower() + "KM, "+ advert.getFuel();
-                    colorPriceMap.add(engine, advert.getPrice());
-
-                });
+                .forEach(advert ->
+                    colorPriceMap.add(Utils.getEngineName(advert), advert.getPrice())
+                );
 
         colorPriceMap.keySet().forEach( key -> {
             List<Integer> values = colorPriceMap.get(key);
@@ -286,97 +249,10 @@ public class ApproximationService {
             });
         });
 
-        getMeanPoints(regressX, regressY, filteredEnginePriceMap, means);
-        return createTextChartData("Engine",advertX, advertY, regressX, regressY);
+        Double formY = getMeanPoints(regressX, regressY, filteredEnginePriceMap, means, formX);
+        return createTextChartData("Engine",advertX, advertY, regressX, regressY, formX, formY);
     }
 
-    private ChartDTO fuelMean(List<Adverts> adverts){
-        List<String> advertX = new ArrayList<>();
-        List<Integer> advertY = new ArrayList<>();
-        List<String> regressX = new ArrayList<>();
-        List<Double> regressY = new ArrayList<>();
-        MultiValueMap<String, Integer> colorPriceMap = new LinkedMultiValueMap<>();
-        Map<String, Double> means = new HashMap<>();
-
-        adverts.stream()
-                .filter(advert -> advert.getFuel() != null)
-                .forEach(advert -> {
-                    colorPriceMap.add(advert.getFuel(), advert.getPrice());
-                    advertX.add(advert.getFuel());
-                    advertY.add(advert.getPrice());
-                });
-
-        getMeanPoints(regressX, regressY, colorPriceMap, means);
-        return createTextChartData("Fuel",advertX, advertY, regressX, regressY);
-    }
-    private ChartDTO powerMean(List<Adverts> adverts, String formX){
-        List<String> advertX = new ArrayList<>();
-        List<Integer> advertY = new ArrayList<>();
-        List<String> regressX = new ArrayList<>();
-        List<Double> regressY = new ArrayList<>();
-        MultiValueMap<String, Integer> colorPriceMap = new LinkedMultiValueMap<>();
-        Map<String, Double> means = new HashMap<>();
-
-        adverts.stream()
-                .filter(advert -> advert.getPower() != null)
-                .forEach(advert -> {
-                    colorPriceMap.add(advert.getPower().toString(), advert.getPrice());
-                    advertX.add(advert.getPower().toString());
-                    advertY.add(advert.getPrice());
-                });
-
-        Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        return createTextChartData("Power KM - Mean",advertX, advertY, regressX, regressY, formX, formY);
-    }
-    private ChartDTO capacityMean(List<Adverts> adverts){
-        List<String> advertX = new ArrayList<>();
-        List<Integer> advertY = new ArrayList<>();
-        List<String> regressX = new ArrayList<>();
-        List<Double> regressY = new ArrayList<>();
-        MultiValueMap<String, Integer> colorPriceMap = new LinkedMultiValueMap<>();
-        Map<String, Double> means = new HashMap<>();
-
-        adverts.stream()
-                .filter(advert -> advert.getEngineCapacity() != null)
-                .forEach(advert -> {
-                    colorPriceMap.add(advert.getEngineCapacity().toString(), advert.getPrice());
-                    advertX.add(advert.getEngineCapacity().toString());
-                    advertY.add(advert.getPrice());
-                });
-
-        getMeanPoints(regressX, regressY, colorPriceMap, means);
-        return createTextChartData("Capacity",advertX, advertY, regressX, regressY);
-    }
-
-    private ChartDTO yearMileageRegression(List<Adverts> adverts) {
-        SimpleRegression regression = new SimpleRegression();
-        List<Integer> advertX = new ArrayList<>();
-        List<Integer> advertY = new ArrayList<>();
-        List<Integer> regressX = new ArrayList<>();
-        List<Double> regressY = new ArrayList<>();
-
-        adverts.stream()
-                .filter(advert -> advert.getYear() != null)
-                .forEach(advert -> {
-                    regression.addData(advert.getYear(), advert.getMileage());
-                    advertX.add(advert.getYear());
-                    advertY.add(advert.getMileage());
-                });
-
-        getRegressionPoints(advertX, regressX, regressY, regression);
-        return createIntegerChartData("Year", advertX, advertY, regressX, regressY);
-    }
-
-    private void getMeanPoints(List<String> regressX, List<Double> regressY, MultiValueMap<String, Integer> colorPriceMap, Map<String, Double> means) {
-        colorPriceMap.keySet().forEach( key -> {
-            List<Integer> values = colorPriceMap.get(key);
-            Double mean = (double) values.stream().mapToInt(Integer::intValue).sum() / values.size();
-            means.put(key,mean);
-            regressX.add(key);
-            regressY.add(mean);
-        });
-
-    }
     private Double getMeanPoints(List<String> regressX, List<Double> regressY, MultiValueMap<String, Integer> colorPriceMap, Map<String, Double> means, String formValue) {
         colorPriceMap.keySet().forEach( key -> {
             List<Integer> values = colorPriceMap.get(key);
@@ -442,34 +318,5 @@ public class ApproximationService {
         chart.setFormY(formY);
         return chart;
     }
-
-
- /*=   //Polynomial test
-    private ChartDTO yearMileageRegression(List<Adverts> adverts) {
-        PolynomialCurveFitter regression = PolynomialCurveFitter.create(3);
-        int[] advertX = new int[adverts.size()];
-        int[] advertY = new int[adverts.size()];
-        double[] regressY = new double[adverts.size()];
-
-         WeightedObservedPoints obs = new WeightedObservedPoints();
-
-        adverts.forEach(advert -> {
-            obs.add(advert.getYear(), advert.getMileage());
-        });
-
-        PolynomialFunction polynomialFunction = new PolynomialFunction(regression.fit(obs.toList()));
-
-        for(int i = 0; i < adverts.size(); i ++){
-            advertX[i] = adverts.get(i).getYear();
-            advertY[i] = adverts.get(i).getMileage();
-            regressY[i] = polynomialFunction.value(adverts.get(i).getYear());
-        }
-        ChartDTO chart = new ChartDTO();
-        chart.setType("Year-Mileage");
-        chart.setAdvertX(advertX);
-        chart.setAdvertY(advertY);
-        chart.setRegressY(regressY);
-        return chart;
-    }*/
 
 }

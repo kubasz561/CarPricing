@@ -38,7 +38,7 @@ public class RestApiController {
         List<Adverts> adverts = searchService.searchInDatabase(form);
 
        // return searchService.search(form);
-        descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
+       // descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
         return approximationService.approximate(adverts, form);
 
     }

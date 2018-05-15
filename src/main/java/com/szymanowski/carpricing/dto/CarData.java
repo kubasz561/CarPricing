@@ -4,18 +4,21 @@ public class CarData {
 
     private String marka;
     private String model;
+
     private String year;
     private Integer mileage;
+
+    //engine
     private Integer engineCapacity;
     private Integer power;
-
     private String fuel;
-    private String type;
-    private String color;
+
+    private String type;//+year - optional
+    private String color;//+year - optional
+    private Boolean hadAccident;//+year - mandatory
+    private Boolean isFirstOwner;//+year - mandatory
 
     private Boolean isNew;
-    private Boolean hadAccident;
-    private Boolean isFirstOwner;
 
     private String description;
 
@@ -96,12 +99,12 @@ public class CarData {
         this.color = color;
     }
 
-    public Boolean getNew() {
+    public Boolean getIsNew() {
         return isNew;
     }
 
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
+    public void setIsNew(Boolean isNew) {
+        this.isNew = isNew;
     }
 
     public Boolean getHadAccident() {
@@ -112,12 +115,12 @@ public class CarData {
         this.hadAccident = hadAccident;
     }
 
-    public Boolean getFirstOwner() {
+    public Boolean getIsFirstOwner() {
         return isFirstOwner;
     }
 
-    public void setFirstOwner(Boolean firstOwner) {
-        isFirstOwner = firstOwner;
+    public void setIsFirstOwner(Boolean isFirstOwner) {
+        this.isFirstOwner = isFirstOwner;
     }
 
     public String getDescription() {
