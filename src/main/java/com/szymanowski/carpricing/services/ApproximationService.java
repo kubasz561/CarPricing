@@ -2,6 +2,7 @@ package com.szymanowski.carpricing.services;
 
 import com.szymanowski.carpricing.Utils;
 import com.szymanowski.carpricing.constants.ChartMode;
+import com.szymanowski.carpricing.constants.Params;
 import com.szymanowski.carpricing.dto.CarData;
 import com.szymanowski.carpricing.dto.ChartDTO;
 import com.szymanowski.carpricing.dto.IntegerChartDTO;
@@ -9,6 +10,7 @@ import com.szymanowski.carpricing.dto.TextChartDTO;
 import com.szymanowski.carpricing.repository.Adverts;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.apache.commons.math3.util.Precision;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,6 +21,9 @@ import java.util.List;
 @Service
 public class ApproximationService {
     private final int MIN_ENGINE_COUNT = 3;
+
+    @Autowired
+    ApproximationStorage approximationStorage;
 
     public List<ChartDTO> approximate(List<Adverts> adverts, CarData form){
         List<ChartDTO> charts = new ArrayList<>();
@@ -63,8 +68,8 @@ public class ApproximationService {
                 });
         Double formY = regression.predict(formX);
         getRegressionPoints(advertX,regressX,regressY, regression);
-
-        return createIntegerChartData("Mileage", advertX, advertY, regressX, regressY, formX, formY, regression);
+        approximationStorage.setMileageRegression(regression);
+        return createIntegerChartData(Params.MILEAGE.getValue(), advertX, advertY, regressX, regressY, formX, formY, regression);
     }
 
 
@@ -85,7 +90,8 @@ public class ApproximationService {
 
         getRegressionPoints(advertX,regressX,regressY, regression);
         Double formY = regression.predict(formX);
-        return createIntegerChartData("Year", advertX, advertY, regressX, regressY, formX, formY, regression);
+        approximationStorage.setYearRegression(regression);
+        return createIntegerChartData(Params.YEAR.getValue(), advertX, advertY, regressX, regressY, formX, formY, regression);
     }
 
     private ChartDTO colorMean(List<Adverts> adverts, String formX){
@@ -105,7 +111,8 @@ public class ApproximationService {
                 });
 
         Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        return createTextChartData("Color",advertX, advertY, regressX, regressY, formX, formY);
+        approximationStorage.addMeanToMap(Params.COLOR, means);
+        return createTextChartData(Params.COLOR.getValue(),advertX, advertY, regressX, regressY, formX, formY);
     }
     private ChartDTO colorYearMean(List<Adverts> adverts, String formX){
         List<String> advertX = new ArrayList<>();
@@ -125,7 +132,8 @@ public class ApproximationService {
                 });
 
         Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        return createTextChartData("Color - Year",advertX, advertY, regressX, regressY, formX, formY);
+        approximationStorage.addMeanToMap(Params.COLOR_YEAR, means);
+        return createTextChartData(Params.COLOR_YEAR.getValue(),advertX, advertY, regressX, regressY, formX, formY);
     }
 
     private ChartDTO accidentMean(List<Adverts> adverts, String formX){
@@ -147,7 +155,8 @@ public class ApproximationService {
                 });
 
         Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        return createTextChartData("Bezwypadkowy",advertX, advertY, regressX, regressY, formX, formY); // tymczasowe odwrocenie znaczenia do czasu naprawy danych w bazie
+        approximationStorage.addMeanToMap(Params.ACCIDENT_YEAR, means);
+        return createTextChartData(Params.ACCIDENT_YEAR.getValue(),advertX, advertY, regressX, regressY, formX, formY); // tymczasowe odwrocenie znaczenia do czasu naprawy danych w bazie
     }
 
     private ChartDTO firstOwnerMean(List<Adverts> adverts, String formX){
@@ -169,7 +178,8 @@ public class ApproximationService {
                 });
 
         Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        return createTextChartData("First Owner",advertX, advertY, regressX, regressY, formX, formY);
+        approximationStorage.addMeanToMap(Params.FIRST_OWNER_YEAR, means);
+        return createTextChartData(Params.FIRST_OWNER_YEAR.getValue(),advertX, advertY, regressX, regressY, formX, formY);
     }
 
     private ChartDTO typeMean(List<Adverts> adverts, String formX){
@@ -190,7 +200,9 @@ public class ApproximationService {
                 });
 
         Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        return createTextChartData("Type",advertX, advertY, regressX, regressY, formX, formY);
+        approximationStorage.addMeanToMap(Params.TYPE, means);
+
+        return createTextChartData(Params.TYPE.getValue(),advertX, advertY, regressX, regressY, formX, formY);
     }
 
     private ChartDTO typeYearMean(List<Adverts> adverts, String formX){
@@ -212,7 +224,8 @@ public class ApproximationService {
                 });
 
         Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        return createTextChartData("Type Year",advertX, advertY, regressX, regressY, formX, formY);
+        approximationStorage.addMeanToMap(Params.TYPE_YEAR, means);
+        return createTextChartData(Params.TYPE_YEAR.getValue(),advertX, advertY, regressX, regressY, formX, formY);
     }
 
 
@@ -250,7 +263,8 @@ public class ApproximationService {
         });
 
         Double formY = getMeanPoints(regressX, regressY, filteredEnginePriceMap, means, formX);
-        return createTextChartData("Engine",advertX, advertY, regressX, regressY, formX, formY);
+        approximationStorage.addMeanToMap(Params.ENGINE, means);
+        return createTextChartData(Params.ENGINE.getValue(),advertX, advertY, regressX, regressY, formX, formY);
     }
 
     private Double getMeanPoints(List<String> regressX, List<Double> regressY, MultiValueMap<String, Integer> colorPriceMap, Map<String, Double> means, String formValue) {
