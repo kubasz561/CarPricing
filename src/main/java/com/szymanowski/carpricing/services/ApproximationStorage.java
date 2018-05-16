@@ -9,9 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-@Scope(value = "request")
 public class ApproximationStorage {
-
+//TODO refactor to nie moze byc tak przechowywane
     SimpleRegression mileageRegression;
     SimpleRegression yearRegression;
     Map<Params, Map<String, Double>> means = new HashMap<>();
