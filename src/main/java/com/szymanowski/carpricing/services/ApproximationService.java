@@ -3,10 +3,7 @@ package com.szymanowski.carpricing.services;
 import com.szymanowski.carpricing.Utils;
 import com.szymanowski.carpricing.constants.ChartMode;
 import com.szymanowski.carpricing.constants.Params;
-import com.szymanowski.carpricing.dto.CarData;
-import com.szymanowski.carpricing.dto.ChartDTO;
-import com.szymanowski.carpricing.dto.IntegerChartDTO;
-import com.szymanowski.carpricing.dto.TextChartDTO;
+import com.szymanowski.carpricing.dto.*;
 import com.szymanowski.carpricing.repository.Adverts;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.apache.commons.math3.util.Precision;
@@ -25,6 +22,28 @@ public class ApproximationService {
     @Autowired
     ApproximationStorage approximationStorage;
 
+    public int calculatePrice(LPResultDTO lpResult, CarData form){
+        double[] wParams = lpResult.getwParams();
+        return (int) (approximationStorage.getMileageRegression().predict(form.getMileage()) * wParams[0] +
+                approximationStorage.getYearRegression().predict(form.getYear()) * wParams[1] +
+                approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(form)) * wParams[2]
+        );
+    }
+    public int calculateAverageDiff(LPResultDTO lpResult, List<Adverts> adverts){ //TODO to jest duplikacja z lpSErvice
+        double[] wParams = lpResult.getwParams();
+        List<Double> diffs = new ArrayList<>();
+        adverts.stream()
+                .filter(advert -> advert.getEngineCapacity()!= null)
+                .filter(advert -> advert.getFuel()!= null)
+                .filter(advert -> advert.getPower()!= null)
+                .filter(advert -> approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) != null)
+                .forEach(advert ->
+           diffs.add(advert.getPrice() - (approximationStorage.getMileageRegression().predict(advert.getMileage()) * wParams[0] +
+                    approximationStorage.getYearRegression().predict(advert.getYear()) * wParams[1] +
+                   approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) * wParams[2] ))
+        );
+        return  diffs.stream().mapToInt(i -> Math.abs(i.intValue())).sum() / diffs.size();
+    }
     public List<ChartDTO> approximate(List<Adverts> adverts, CarData form){
         List<ChartDTO> charts = new ArrayList<>();
 
@@ -33,13 +52,13 @@ public class ApproximationService {
 
         charts.add(engineMean(adverts, Utils.getEngineName(form)));
 
-        charts.add(accidentMean(adverts, form.getYear()+form.getHadAccident()));
-        charts.add(firstOwnerMean(adverts, form.getYear()+form.getIsFirstOwner()));
+        charts.add(accidentMean(adverts,  Utils.appendYearToParam(form, form.getHadAccident())));
+        charts.add(firstOwnerMean(adverts, Utils.appendYearToParam(form, form.getIsFirstOwner())));
 
         charts.add(colorMean(adverts, form.getColor()));
-        charts.add(colorYearMean(adverts, form.getYear()+form.getColor()));
+        charts.add(colorYearMean(adverts, Utils.appendYearToParam(form, form.getColor())));
         charts.add(typeMean(adverts, form.getType()));
-        charts.add(typeYearMean(adverts,form.getYear()+form.getType()));
+        charts.add(typeYearMean(adverts,Utils.appendYearToParam(form, form.getType())));
 /*
         charts.add(fuelMean(adverts));
         charts.add(powerMean(adverts,form.getPower().toString()+" KM"));
@@ -126,8 +145,8 @@ public class ApproximationService {
                 .filter(advert -> advert.getColor() != null)
                 .sorted(Comparator.comparing(Adverts::getYear).thenComparing(Adverts::getColor))
                 .forEach(advert -> {
-                    colorPriceMap.add(advert.getYear()+advert.getColor(), advert.getPrice());
-                    advertX.add(advert.getYear()+advert.getColor());
+                    colorPriceMap.add(Utils.appendYearToParam(advert, advert.getColor()), advert.getPrice());
+                    advertX.add(Utils.appendYearToParam(advert, advert.getColor()));
                     advertY.add(advert.getPrice());
                 });
 
@@ -149,8 +168,8 @@ public class ApproximationService {
                 .filter(advert -> advert.getYear() != null)
                 .sorted(Comparator.comparing(Adverts::getYear).thenComparing(Adverts::getHadAccident))
                 .forEach(advert -> {
-                    colorPriceMap.add(advert.getYear()+advert.getHadAccident().toString(), advert.getPrice());
-                    advertX.add(advert.getYear()+advert.getHadAccident().toString());
+                    colorPriceMap.add(Utils.appendYearToParam(advert, advert.getHadAccident()), advert.getPrice());
+                    advertX.add(Utils.appendYearToParam(advert, advert.getHadAccident()));
                     advertY.add(advert.getPrice());
                 });
 
@@ -172,8 +191,8 @@ public class ApproximationService {
                 .filter(advert -> advert.getYear() != null)
                 .sorted(Comparator.comparing(Adverts::getYear).thenComparing(Adverts::getFirstOwner))
                 .forEach(advert -> {
-                    colorPriceMap.add(advert.getYear()+advert.getFirstOwner().toString(), advert.getPrice());
-                    advertX.add(advert.getYear()+advert.getFirstOwner().toString());
+                    colorPriceMap.add(Utils.appendYearToParam(advert, advert.getFirstOwner()), advert.getPrice());
+                    advertX.add(Utils.appendYearToParam(advert, advert.getFirstOwner()));
                     advertY.add(advert.getPrice());
                 });
 
@@ -218,8 +237,8 @@ public class ApproximationService {
                 .filter(advert -> advert.getYear() != null)
                 .sorted(Comparator.comparing(Adverts::getYear).thenComparing(Adverts::getType))
                 .forEach(advert -> {
-                    colorPriceMap.add(advert.getYear()+advert.getType(), advert.getPrice());
-                    advertX.add(advert.getYear()+advert.getType());
+                    colorPriceMap.add(Utils.appendYearToParam(advert, advert.getType()), advert.getPrice());
+                    advertX.add(Utils.appendYearToParam(advert, advert.getType()));
                     advertY.add(advert.getPrice());
                 });
 

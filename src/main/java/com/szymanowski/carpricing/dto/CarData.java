@@ -5,7 +5,7 @@ public class CarData {
     private String marka;
     private String model;
 
-    private String year;
+    private Integer year;
     private Integer mileage;
 
     //engine
@@ -43,11 +43,11 @@ public class CarData {
     }
 
 
-    public String getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 

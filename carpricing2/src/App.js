@@ -22,7 +22,10 @@ class App extends Component {
             hadAccident: true,
             isFirstOwner: false,
             description: "...opis",
-            response: null
+            charts: null,
+            formPrice: null,
+            averageDiff: null,
+            lpResult: null
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -187,10 +190,19 @@ class App extends Component {
                     <input type="submit" value="Submit"/>
                 </form>
                 <br />
-                {this.state.response && this.state.response.map(chart =>
-                    chart.formY && <h3>Parametr: {chart.type} /// Wartosc: {chart.formX} /// Cena: {chart.formY } </h3>
+                    {this.state.response &&
+                        <div>
+                            <h2>Proponowana Cena: {this.state.response.formPrice} zł  </h2>
+                            <h4>Srednie odchylenie od ceny: {this.state.response.averageDiff} zł  </h4>
+                            <h4>Wartośći współczynników: {this.state.response.lpResultDTO.wParams.map(w => " " + w +", ")} solution: {this.state.response.lpResultDTO.totalDiff} </h4>
+                            <h4>Obliczone na podstawie {this.state.response.lpResultDTO.filteredAdvertsCount} ogłoszeń </h4>
+                        </div>
+                    }
+                <br />
+                {this.state.response && this.state.response.charts.map(chart =>
+                    chart.formY && <h5>Parametr: {chart.type} / Wartosc: {chart.formX} / Cena: {chart.formY } </h5>
                 )}
-                {this.state.response && this.state.response.map(chart =>
+                {this.state.response && this.state.response.charts.map(chart =>
                 <div>
                     <div>
                         <Plot
@@ -223,7 +235,7 @@ class App extends Component {
                     <div>
                     {chart.r && <span>R: {chart.r} </span>}
                     {chart.r && <br/>}
-                    {chart.formY && <h3>Parametr: {chart.type} /// Wartosc: {chart.formX} /// Cena: {chart.formY} </h3>}
+                    {chart.formY && <h5>Parametr: {chart.type} / Wartosc: {chart.formX} / Cena: {chart.formY} </h5>}
                     </div>
                 </div>
                 )}
@@ -258,7 +270,10 @@ class App extends Component {
             data:  this.state,
             method: 'POST',
             success: function (result) {
-                _this2.setState({response:result});
+                _this2.setState({
+
+                    response:result
+                });
             }
         });
     }
