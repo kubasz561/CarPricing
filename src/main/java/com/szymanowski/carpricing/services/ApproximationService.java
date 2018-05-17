@@ -27,8 +27,8 @@ public class ApproximationService {
         return (int) (approximationStorage.getMileageRegression().predict(advert.getMileage()) * wParams[0] +
                 approximationStorage.getYearRegression().predict(advert.getYear()) * wParams[1] +
                 approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) * wParams[2] +
-                approximationStorage.getMeans().get(Params.COLOR_YEAR).get(Utils.appendYearToParam(advert, advert.getColor())) * wParams[3] +
-                approximationStorage.getMeans().get(Params.TYPE_YEAR).get(Utils.appendYearToParam(advert, advert.getType())) * wParams[4] +
+                approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()) * wParams[3] +
+                approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()) * wParams[4] +
                 approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getIsFirstOwner())) * wParams[5] +
                 approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident())) * wParams[6]
         );
@@ -41,16 +41,16 @@ public class ApproximationService {
                 .filter(advert -> advert.getFuel()!= null)
                 .filter(advert -> advert.getPower()!= null)
                 .filter(advert -> approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.COLOR_YEAR).get(Utils.appendYearToParam(advert, advert.getColor())) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.TYPE_YEAR).get(Utils.appendYearToParam(advert, advert.getType())) != null)
+                .filter(advert -> approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()) != null)
+                .filter(advert -> approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()) != null)
                 .filter(advert -> approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())) != null)
                 .filter(advert -> approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident())) != null)
                 .forEach(advert ->
            diffs.add(advert.getPrice() - (approximationStorage.getMileageRegression().predict(advert.getMileage()) * wParams[0] +
                     approximationStorage.getYearRegression().predict(advert.getYear()) * wParams[1] +
                    approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) * wParams[2] +
-                   approximationStorage.getMeans().get(Params.COLOR_YEAR).get(Utils.appendYearToParam(advert, advert.getColor())) * wParams[3] +
-                   approximationStorage.getMeans().get(Params.TYPE_YEAR).get(Utils.appendYearToParam(advert, advert.getType())) * wParams[4] +
+                   approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()) * wParams[3] +
+                   approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()) * wParams[4] +
                    approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())) * wParams[5] +
                    approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident())) * wParams[6]
                    )

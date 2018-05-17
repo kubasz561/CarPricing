@@ -42,8 +42,8 @@ public class LPService {
                 .filter(advert -> advert.getFuel()!= null)
                 .filter(advert -> advert.getPower()!= null)
                 .filter(advert -> approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.COLOR_YEAR).get(Utils.appendYearToParam(advert, advert.getColor())) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.TYPE_YEAR).get(Utils.appendYearToParam(advert, advert.getType())) != null)
+                .filter(advert -> approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()) != null)
+                .filter(advert -> approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()) != null)
                 .filter(advert -> approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())) != null)
                 .filter(advert -> approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident())) != null)
                 .collect(Collectors.toList());
@@ -55,8 +55,8 @@ public class LPService {
                     approximationStorage.getMileageRegression().predict(advert.getMileage()),
                     approximationStorage.getYearRegression().predict(advert.getYear()),
                     approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)),
-                    approximationStorage.getMeans().get(Params.COLOR_YEAR).get(Utils.appendYearToParam(advert, advert.getColor())),
-                    approximationStorage.getMeans().get(Params.TYPE_YEAR).get(Utils.appendYearToParam(advert, advert.getType())),
+                    approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()),
+                    approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()),
                     approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())),
                     approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident()))
 
