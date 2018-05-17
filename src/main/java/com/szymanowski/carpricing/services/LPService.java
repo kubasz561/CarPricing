@@ -28,8 +28,8 @@ public class LPService {
         StringBuilder partPriceStringBuilder = new StringBuilder();
 
         totalPriceStringBuilder.append("param C := ");
-        partPriceStringBuilder.append("param c : 1 2 3:= "); //TODO automatyzacja
-       // partPriceStringBuilder.append("param c : 1 2 3 4 5 6 7 := ");
+        //partPriceStringBuilder.append("param c : 1 2 3:= "); //TODO automatyzacja
+        partPriceStringBuilder.append("param c : 1 2 3 4 5 6 7 := ");
 
     /*
         partPriceStringBuilder.append("param c : ");
@@ -42,19 +42,15 @@ public class LPService {
                 .filter(advert -> advert.getFuel()!= null)
                 .filter(advert -> advert.getPower()!= null)
                 .filter(advert -> approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) != null)
+                .filter(advert -> approximationStorage.getMeans().get(Params.COLOR_YEAR).get(Utils.appendYearToParam(advert, advert.getColor())) != null)
+                .filter(advert -> approximationStorage.getMeans().get(Params.TYPE_YEAR).get(Utils.appendYearToParam(advert, advert.getType())) != null)
+                .filter(advert -> approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())) != null)
+                .filter(advert -> approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident())) != null)
                 .collect(Collectors.toList());
-
 
         for (int i = 0; i < advertFiltered.size(); ++i) {
             Adverts advert = advertFiltered.get(i);
             totalPriceStringBuilder.append((i+1) + " " + advert.getPrice() + " ");
-            List<Double> prices = Arrays.asList(
-                    approximationStorage.getMileageRegression().predict(advert.getMileage()),
-                    approximationStorage.getYearRegression().predict(advert.getYear()),
-                    approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert))
-
-             );
-/*
             List<Double> prices = Arrays.asList(
                     approximationStorage.getMileageRegression().predict(advert.getMileage()),
                     approximationStorage.getYearRegression().predict(advert.getYear()),
@@ -63,7 +59,9 @@ public class LPService {
                     approximationStorage.getMeans().get(Params.TYPE_YEAR).get(Utils.appendYearToParam(advert, advert.getType())),
                     approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())),
                     approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident()))
-            );*/
+
+             );
+
 
             partPriceStringBuilder.append(" "+(i+1) +" ");
             for (int k = 0; k < prices.size(); ++k) {
@@ -76,7 +74,7 @@ public class LPService {
         try {
 
             ampl.read("C:/Users/Admin/Desktop/CarPricing/ampl/model.mod");
-            ampl.eval("data; param N := "+ 3+";    param M := " + advertFiltered.size() + ";  ");//TODO automatyzacja wielkosci n
+            ampl.eval("data; param N := "+ 7+";    param M := " + advertFiltered.size() + ";  ");//TODO automatyzacja wielkosci n
             ampl.eval(totalPriceStringBuilder.toString());
             ampl.eval(partPriceStringBuilder.toString());
 
