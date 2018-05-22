@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +21,8 @@ public class LPService {
 
     @Autowired
     ApproximationStorage approximationStorage;
+    @Autowired
+    ParametersService parametersService;
 
     public LPResultDTO optimize(List<Adverts> adverts) {
         AMPL ampl = new AMPL();
@@ -29,42 +32,27 @@ public class LPService {
 
         totalPriceStringBuilder.append("param C := ");
         //partPriceStringBuilder.append("param c : 1 2 3:= "); //TODO automatyzacja
-        partPriceStringBuilder.append("param c : 1 2 3 4 5 6 7 := ");
+       // partPriceStringBuilder.append("param c : 1 2 3 4 5 6 7 := ");
 
-    /*
         partPriceStringBuilder.append("param c : ");
-        for (int k = 0; k < prices.size(); ++k) { //narazie 7
-            partPriceStringBuilder.append(" " + k + "");
+        for (int k = 0; k <  parametersService.getAppliedFilters().size(); ++k) { //narazie 7
+            partPriceStringBuilder.append(" " + (k+1) + "");
         }
-        partPriceStringBuilder.append(" := ");*/
+        partPriceStringBuilder.append(" := ");
+
         List<Adverts> advertFiltered = adverts.stream()
-                .filter(advert -> advert.getEngineCapacity()!= null)
-                .filter(advert -> advert.getFuel()!= null)
-                .filter(advert -> advert.getPower()!= null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident())) != null)
+                .filter(parametersService.applyAdvertFilters())
                 .collect(Collectors.toList());
 
         for (int i = 0; i < advertFiltered.size(); ++i) {
             Adverts advert = advertFiltered.get(i);
             totalPriceStringBuilder.append((i+1) + " " + advert.getPrice() + " ");
-            List<Double> prices = Arrays.asList(
-                    approximationStorage.getMileageRegression().predict(advert.getMileage()),
-                    approximationStorage.getYearRegression().predict(advert.getYear()),
-                    approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)),
-                    approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()),
-                    approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()),
-                    approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())),
-                    approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident()))
+            List<Double> prices = new ArrayList<>();
 
-             );
-
+            parametersService.getAppliedAdvertsFilters().forEach(filter -> prices.add(filter.apply(advert)));
 
             partPriceStringBuilder.append(" "+(i+1) +" ");
-            for (int k = 0; k < prices.size(); ++k) {
+            for (int k = 0; k < prices.size(); ++k) {//parametersService.getAppliedFilters().size(
                 partPriceStringBuilder.append(" " + prices.get(k).intValue() + " ");
             }
         }
@@ -74,7 +62,7 @@ public class LPService {
         try {
 
             ampl.read("C:/Users/Admin/Desktop/CarPricing/ampl/model.mod");
-            ampl.eval("data; param N := "+ 7+";    param M := " + advertFiltered.size() + ";  ");//TODO automatyzacja wielkosci n
+            ampl.eval("data; param N := "+ parametersService.getAppliedFilters().size()+";    param M := " + advertFiltered.size() + ";  ");//TODO automatyzacja wielkosci n
             ampl.eval(totalPriceStringBuilder.toString());
             ampl.eval(partPriceStringBuilder.toString());
 

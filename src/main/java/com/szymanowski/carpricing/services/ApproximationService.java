@@ -22,42 +22,6 @@ public class ApproximationService {
     @Autowired
     ApproximationStorage approximationStorage;
 
-    public int calculatePrice(LPResultDTO lpResult, CarData advert){//TODO zabezpieczenie, walidacja formularza czy cos, ?dodanie do LP jesli znajdzie means?
-        double[] wParams = lpResult.getwParams();
-        return (int) (approximationStorage.getMileageRegression().predict(advert.getMileage()) * wParams[0] +
-                approximationStorage.getYearRegression().predict(advert.getYear()) * wParams[1] +
-                approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) * wParams[2] +
-                approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()) * wParams[3] +
-                approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()) * wParams[4] +
-                approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getIsFirstOwner())) * wParams[5] +
-                approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident())) * wParams[6]
-        );
-    }
-    public int calculateAverageDiff(LPResultDTO lpResult, List<Adverts> adverts){ //TODO to jest duplikacja z lpSErvice
-        double[] wParams = lpResult.getwParams();
-        List<Double> diffs = new ArrayList<>();
-        adverts.stream()
-                .filter(advert -> advert.getEngineCapacity()!= null)
-                .filter(advert -> advert.getFuel()!= null)
-                .filter(advert -> advert.getPower()!= null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())) != null)
-                .filter(advert -> approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident())) != null)
-                .forEach(advert ->
-           diffs.add(advert.getPrice() - (approximationStorage.getMileageRegression().predict(advert.getMileage()) * wParams[0] +
-                    approximationStorage.getYearRegression().predict(advert.getYear()) * wParams[1] +
-                   approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(advert)) * wParams[2] +
-                   approximationStorage.getMeans().get(Params.COLOR).get(advert.getColor()) * wParams[3] +
-                   approximationStorage.getMeans().get(Params.TYPE).get(advert.getType()) * wParams[4] +
-                   approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(advert, advert.getFirstOwner())) * wParams[5] +
-                   approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(advert, advert.getHadAccident())) * wParams[6]
-                   )
-           )
-        );
-        return  diffs.stream().mapToInt(i -> Math.abs(i.intValue())).sum() / diffs.size();
-    }
     public List<ChartDTO> approximate(List<Adverts> adverts, CarData form){
         List<ChartDTO> charts = new ArrayList<>();
 

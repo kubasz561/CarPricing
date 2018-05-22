@@ -25,6 +25,8 @@ public class RestApiController {
     ApproximationService approximationService;
     @Autowired
     DescriptionAnalyzerService descriptionAnalyzerService;
+    @Autowired
+    ParametersService parametersService;
 
     @Autowired
     LPService lpService;
@@ -43,11 +45,12 @@ public class RestApiController {
        // return searchService.search(form);
        // descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
         List<ChartDTO> chartDTOS = approximationService.approximate(adverts, form);
+        parametersService.calculateFilters(form);
         LPResultDTO optimizationResult = lpService.optimize(adverts);
-        int price = approximationService.calculatePrice(optimizationResult, form);
-        int averageDiff = approximationService.calculateAverageDiff(optimizationResult, adverts);
-
-        return createResponse(chartDTOS, optimizationResult, price, averageDiff);
+        Double price =  parametersService.calculatePrice(form, optimizationResult.getwParams());
+        int averageDiff = parametersService.calculateDiffs(adverts, optimizationResult.getwParams());
+        String filtersInfo = parametersService.getAppliedFiltersNames().toString() + parametersService.getAppliedFiltersNames().size();
+        return createResponse(chartDTOS, optimizationResult, price != null ? price.intValue(): 0, averageDiff);
 
     }
 
