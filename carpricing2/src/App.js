@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import $ from 'jquery';
 import './App.css';
 import SelectYear from './components/SelectYear';
+import Results from './components/Results';
 import Plot from 'react-plotly.js';
 
 class App extends Component {
@@ -38,7 +39,7 @@ class App extends Component {
                 </header>
 
                 <br />
-                <form onSubmit={this.submit}>
+                <form onSubmit={this.submit} name="theForm">
                     <label>
                         MARKA:
                         <input
@@ -185,58 +186,8 @@ class App extends Component {
                     <br />
                     <input type="submit" value="Submit"/>
                 </form>
-                <br />
-                    {this.state.response &&
-                        <div>
-                            <h2>Proponowana Cena: {this.state.response.formPrice} zł  </h2>
-                            <h4>Srednie odchylenie od ceny: {this.state.response.averageDiff} zł  </h4>
-                            <h4>Mediana odchylenia od ceny: {this.state.response.median} zł  </h4>
-                            <h4>Obliczone na podstawie {this.state.response.lpResultDTO.filteredAdvertsCount} ogłoszeń </h4>
-                            <h4>Parametry wzięte pod uwagę: {this.state.response.filtersInfo} </h4>
-                            <h4>Wartośći współczynników: {this.state.response.lpResultDTO.wParams.map(w => " " + w +", ")} solution: {this.state.response.lpResultDTO.totalDiff} </h4>
-                        </div>
-                    }
-                <br />
-                {this.state.response && this.state.response.charts.map(chart =>
-                    chart.formY && <h5>Parametr: {chart.type} / Wartosc: {chart.formX} / Cena: {chart.formY } </h5>
-                )}
-                {this.state.response && this.state.response.charts.map(chart =>
-                <div>
-                    <div>
-                        <Plot
-                            data={[
-                                {
-                                    x: chart.advertX,
-                                    y: chart.advertY,
-                                    type: 'scatter',
-                                    mode: chart.mainChartMode,
-                                    marker: {color: 'red', size: 12}
-                                },
-                                {
-                                    x: chart.regressX,
-                                    y: chart.regressY,
-                                    type: 'scatter',
-                                    mode: chart.approxChartMode,
-                                    marker: {color: 'blue'}
-                                },
-                                {
-                                    x: [chart.formX],
-                                    y: [chart.formY],
-                                    type: 'scatter',
-                                    mode: chart.mainChartMode,
-                                    marker: {color: 'green', size: 15}
-                                }
-                            ]}
-                            layout={{width: 800, height: 600, title: chart.type}}
-                        />
-                    </div>
-                    <div>
-                    {chart.r && <span>R: {chart.r} </span>}
-                    {chart.r && <br/>}
-                    {chart.formY && <h5>Parametr: {chart.type} / Wartosc: {chart.formX} / Cena: {chart.formY} </h5>}
-                    </div>
-                </div>
-                )}
+                <br/>
+                <Results response={this.state.response}/>
 
             </div>
         );
@@ -265,7 +216,6 @@ class App extends Component {
         let _this2= this;
         $.ajax({
             url: "/api/search",
-            data:  this.state,
             method: 'POST',
             success: function (result) {
                 _this2.setState({
