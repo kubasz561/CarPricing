@@ -8,6 +8,8 @@ public class Adverts {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
 
+    private Long advertId;
+
     private String name;
     private Integer price;
 
@@ -30,6 +32,15 @@ public class Adverts {
 
     @Column(length = 4096)
     private String description;
+
+
+    public Long getAdvertId() {
+        return advertId;
+    }
+
+    public void setAdvertId(Long advertId) {
+        this.advertId = advertId;
+    }
 
     public Integer getId() {
         return id;

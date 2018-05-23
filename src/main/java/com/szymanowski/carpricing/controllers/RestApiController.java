@@ -42,7 +42,7 @@ public class RestApiController {
     public RestResponse search(CarData form) {
         Adverts clientCar = new Adverts();
        // searchService.search(form);
-        List<Adverts> adverts = searchService.searchInDatabase(form);
+        List<Adverts> adverts = searchService.search(form);
 
        // descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
         List<ChartDTO> chartDTOS = approximationService.approximate(adverts, form);

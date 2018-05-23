@@ -18,6 +18,8 @@ public class AdvertParser {
         Elements price = doc.getElementsByClass("offer-price__number");
         Elements items = doc.getElementsByClass("offer-params__item");
         Elements desc = doc.getElementsByClass("offer-description");
+        boolean isNettoPrice = doc.getElementsByClass("offer-price__details").get(0).text().toLowerCase().contains("netto");
+        Long advertID = Long.valueOf(doc.getElementsByClass("offer-meta__value").get(1).text());
 
         Map<String, String> keys =  new HashMap();
 
@@ -38,7 +40,8 @@ public class AdvertParser {
                 .collect(Collectors.joining(" "));
 
         target.setName(advertTitle);
-        target.setPrice(Integer.parseInt(advertPrice.replaceAll("[\\D]", "")));
+        target.setAdvertId(advertID);
+        target.setPrice(calculatePrice(advertPrice, isNettoPrice ));
 
         target.setMake(keys.get("Marka pojazdu"));
         target.setModel(keys.get("Model pojazdu"));
@@ -62,6 +65,11 @@ public class AdvertParser {
         }
         target.setDescription(description.length() > 4001 ? description.substring(0,4000) : description);
         //target.setDescription( description);
+    }
+
+    private Integer calculatePrice(String advertPrice, boolean isNettoPrice) {
+        int price = Integer.parseInt(advertPrice.replaceAll("[\\D]", ""));
+        return (int) (isNettoPrice ? price * 1.23 : price);
     }
 
 }

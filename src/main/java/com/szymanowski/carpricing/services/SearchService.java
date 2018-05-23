@@ -37,6 +37,8 @@ public class SearchService {
     // https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
     //https://www.otomoto.pl/osobowe/volkswagen/golf/od-2003/?search%5Bfilter_float_year%3Ato%5D=2009&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=
     public List<Adverts> search(CarData form) {
+        List<Adverts> adverts = new ArrayList<>();
+
         /*String url;
         if (form.getYear() != null) {
             url = BASE + form.getMarka() + "/" + form.getModel() + "/od-" + form.getYear() + YEAR_MID + form.getYear() + "$" + END;
@@ -45,16 +47,15 @@ public class SearchService {
         }
 */
         String url= "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=";
-        for (int i = 2; i < 15; ++i) {
+        for (int i = 2; i < 3; ++i) {
             try {
                 Document doc = Jsoup.connect(url+i).get();
 
                 Elements links = doc.getElementsByClass("offer-item__photo-link");
                 List<String> hrefs = links.stream().map(a -> a.attributes()).map(a -> a.get("href")).collect(Collectors.toList());
 
-                List<Adverts> adverts = new ArrayList<>();
 
-                int ONE_ADVERT_ONLY = 0;
+                int ONE_ADVERT_ONLY = 1;
                 if (ONE_ADVERT_ONLY == 1) {
                     //TEMPORARY FOR TEST
                     Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
@@ -75,14 +76,11 @@ public class SearchService {
                         }
                     });
                 }
-                //test response
-
-                //return adverts;
             } catch (IOException e) {
                 LOG.info(e.getMessage());
             }
         }
-        return null;
+        return adverts;
     }
 
     //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
