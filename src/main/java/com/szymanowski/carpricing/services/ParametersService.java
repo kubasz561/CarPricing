@@ -147,55 +147,6 @@ public class ParametersService {
         return appliedFilters;
 
     }
-    public Double calculatePrice(CarData form, double[] w ) {
-        if (w.length != getAppliedFilters().size())
-            return null;
-
-        double sum = 0;
-        for (int i = 0; i < w.length ; ++i){
-            sum += getAppliedFilters().get(i).apply(form) * w[i];
-        }
-        return sum;
-    }
-    public Double calculateAdvertPrice(Adverts form, double[] w ) {
-        if (w.length != getAppliedFilters().size())
-            return null;
-
-        double sum = 0;
-        for (int i = 0; i < w.length ; ++i){
-            sum += getAppliedAdvertsFilters().get(i).apply(form) * w[i];
-        }
-        return sum;
-    }
-
-    public int calculateDiffs(List<Adverts> adverts, double[] w) {
-
-        List<Double> diffs = new ArrayList<>();
-
-        adverts.stream()
-                .filter(p -> applyAdvertFilters().test(p))
-                .forEach(advert ->
-                        diffs.add(advert.getPrice() - calculateAdvertPrice(advert, w))
-                );
-
-        return (int) diffs.stream().mapToInt(i -> Math.abs(i.intValue())).average().getAsDouble() ;
-    }
-    public int calculateMedian(List<Adverts> adverts, double[] w) {
-        List<Double> diffs = new ArrayList<>();
-
-        adverts.stream()
-                .filter(p -> applyAdvertFilters().test(p))
-                .forEach(advert ->
-                        diffs.add(advert.getPrice() - calculateAdvertPrice(advert, w))
-                );
-
-        int [] sortedDiffs = diffs.stream().mapToInt(i -> Math.abs(i.intValue())).sorted().toArray();
-        int medium = sortedDiffs.length /2;
-        if (sortedDiffs.length % 2 == 0 &&  sortedDiffs.length > 2)
-            return (sortedDiffs[medium - 1] + sortedDiffs[medium]) /2;
-        else
-            return sortedDiffs[medium];
-    }
 
     public List<String> getAppliedFiltersNames() {
         List<String> appliedFilters = new ArrayList<>();

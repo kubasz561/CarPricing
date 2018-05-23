@@ -27,6 +27,8 @@ public class RestApiController {
     DescriptionAnalyzerService descriptionAnalyzerService;
     @Autowired
     ParametersService parametersService;
+    @Autowired
+    PriceCalculatorService priceCalculatorService;
 
     @Autowired
     LPService lpService;
@@ -42,14 +44,23 @@ public class RestApiController {
        // searchService.search(form);
         List<Adverts> adverts = searchService.searchInDatabase(form);
 
-       // return searchService.search(form);
        // descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
         List<ChartDTO> chartDTOS = approximationService.approximate(adverts, form);
         parametersService.calculateFilters(form);
         LPResultDTO optimizationResult = lpService.optimize(adverts);
-        Double price =  parametersService.calculatePrice(form, optimizationResult.getwParams());
-        int averageDiff = parametersService.calculateDiffs(adverts, optimizationResult.getwParams());
-        int median = parametersService.calculateMedian(adverts, optimizationResult.getwParams());
+        Double price;
+        int averageDiff;
+        int median;
+        if (true) {
+             price = priceCalculatorService.calculatePrice(form, optimizationResult.getwParams());
+             averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams());
+             median = priceCalculatorService.calculateMedian(adverts, optimizationResult.getwParams());
+        } else {
+             price = 0.0;
+             averageDiff = priceCalculatorService.calculateDiffsMethodB(adverts);
+             median = priceCalculatorService.calculateMedianB(adverts);
+        }
+
         //String filtersInfo = parametersService.getAppliedFiltersNames().toString() + parametersService.getAppliedFiltersNames().size();
         String filtersInfo = parametersService.getAppliedFiltersNamesAndValues(optimizationResult.getwParams());
         return createResponse(chartDTOS, optimizationResult, price , averageDiff, median, filtersInfo);
