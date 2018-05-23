@@ -2,10 +2,6 @@ import React, {Component} from 'react';
 import Plot from 'react-plotly.js';
 
 export default class Results extends Component {
-    constructor(props){
-        super(props)
-    }
-
 
     render() {
         return (
