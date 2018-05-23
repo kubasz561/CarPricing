@@ -1,5 +1,7 @@
 package com.szymanowski.carpricing.dto;
 
+import com.szymanowski.carpricing.constants.ApproximationMethod;
+
 public class CarData {
 
     private String marka;
@@ -21,6 +23,8 @@ public class CarData {
     private Boolean isNew;
 
     private String description;
+
+    private ApproximationMethod method;
 
     public CarData() {
     }
@@ -130,4 +134,14 @@ public class CarData {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public ApproximationMethod getMethod() {
+        return method;
+    }
+
+    public void setMethod(ApproximationMethod method) {
+        this.method = method;
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.szymanowski.carpricing.controllers;
 
+import com.szymanowski.carpricing.constants.ApproximationMethod;
 import com.szymanowski.carpricing.dto.CarData;
 import com.szymanowski.carpricing.dto.ChartDTO;
 import com.szymanowski.carpricing.dto.LPResultDTO;
@@ -51,7 +52,7 @@ public class RestApiController {
         Double price;
         int averageDiff;
         int median;
-        if (true) {
+        if (ApproximationMethod.LINEAR_PROGRAMMING.equals(form.getMethod())) {
              price = priceCalculatorService.calculatePrice(form, optimizationResult.getwParams());
              averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams());
              median = priceCalculatorService.calculateMedian(adverts, optimizationResult.getwParams());

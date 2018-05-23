@@ -17,7 +17,8 @@ export default class CarForm extends Component {
             isNew: false,
             hadAccident: true,
             isFirstOwner: false,
-            description: "...opis"
+            description: "...opis",
+            method: "LINEAR_PROGRAMMING"
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
@@ -171,6 +172,14 @@ export default class CarForm extends Component {
                 >
                         ...opis
                     </textarea>
+                <br/>
+                <label>
+                    Metoda aproksymacji:
+                    <select name="method" value={this.state.method} onChange={this.handleInputChange}>
+                        <option value="LINEAR_PROGRAMMING">LINEAR_PROGRAMMING</option>
+                        <option value="MAX_PRICE">MAX_PRICE</option>
+                    </select>
+                </label>
                 <br/>
                 <input type="submit" value="Submit"/>
             </form>
