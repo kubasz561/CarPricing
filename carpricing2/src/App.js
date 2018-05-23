@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import logo from './logo.svg';
+import banner from './porsche-banner.jpg';
 import './App.css';
 import Results from './components/Results';
 import CarForm from "./components/CarForm";
@@ -16,10 +17,8 @@ class App extends Component {
     render() {
         return (
             <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    <h1 className="App-title">Car Pricing</h1>
-                </header>
+                <img src={banner} alt="Banner Image"/>
+                <h1 className="App-title">Wycena aut</h1>
 
                 <br/>
                 <CarForm handleResponse={this.handleResponse.bind(this)}/>

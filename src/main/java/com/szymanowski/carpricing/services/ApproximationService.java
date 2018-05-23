@@ -34,8 +34,9 @@ public class ApproximationService {
         charts.add(firstOwnerMean(adverts, Utils.appendYearToParam(form, form.getIsFirstOwner())));
 
         charts.add(colorMean(adverts, form.getColor()));
-        charts.add(colorYearMean(adverts, Utils.appendYearToParam(form, form.getColor())));
         charts.add(typeMean(adverts, form.getType()));
+
+        charts.add(colorYearMean(adverts, Utils.appendYearToParam(form, form.getColor())));
         charts.add(typeYearMean(adverts,Utils.appendYearToParam(form, form.getType())));
 /*
         charts.add(fuelMean(adverts));
