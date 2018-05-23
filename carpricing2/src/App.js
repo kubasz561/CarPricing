@@ -21,11 +21,7 @@ class App extends Component {
             isNew: false,
             hadAccident: true,
             isFirstOwner: false,
-            description: "...opis",
-            charts: null,
-            formPrice: null,
-            averageDiff: null,
-            lpResult: null
+            description: "...opis"
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -194,8 +190,10 @@ class App extends Component {
                         <div>
                             <h2>Proponowana Cena: {this.state.response.formPrice} zł  </h2>
                             <h4>Srednie odchylenie od ceny: {this.state.response.averageDiff} zł  </h4>
-                            <h4>Wartośći współczynników: {this.state.response.lpResultDTO.wParams.map(w => " " + w +", ")} solution: {this.state.response.lpResultDTO.totalDiff} </h4>
+                            <h4>Mediana odchylenia od ceny: {this.state.response.median} zł  </h4>
                             <h4>Obliczone na podstawie {this.state.response.lpResultDTO.filteredAdvertsCount} ogłoszeń </h4>
+                            <h4>Parametry wzięte pod uwagę: {this.state.response.filtersInfo} </h4>
+                            <h4>Wartośći współczynników: {this.state.response.lpResultDTO.wParams.map(w => " " + w +", ")} solution: {this.state.response.lpResultDTO.totalDiff} </h4>
                         </div>
                     }
                 <br />

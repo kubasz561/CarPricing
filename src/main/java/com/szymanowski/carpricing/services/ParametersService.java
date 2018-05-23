@@ -26,7 +26,6 @@ public class ParametersService {
     private boolean isFirstOwnerYear;
     private boolean isAccidentYear;
 
-//TODO dodac nullchecki
     private Function<CarData, Double> year = p -> approximationStorage.getYearRegression().predict(p.getYear());
     private Function<CarData, Double> mileage = p -> approximationStorage.getMileageRegression().predict(p.getMileage());
     private Function<CarData, Double> engine = p -> approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(p));
@@ -52,19 +51,19 @@ public class ParametersService {
         return p -> p.getMileage() != null && mileage.apply(p) != null;
     }
     private Predicate<CarData> checkEngine() {
-        return p -> engine.apply(p) != null;
+        return p -> p.getYear() != null && p.getPower() != null && p.getEngineCapacity() != null && p.getFuel() != null && engine.apply(p) != null;
     }
     private Predicate<CarData> checkColor() {
-        return p ->  color.apply(p) != null;
+        return p ->  p.getColor() != null && color.apply(p) != null;
     }
     private Predicate<CarData> checkType() {
-        return p -> type.apply(p) != null;
+        return p -> p.getType() != null && type.apply(p) != null;
     }
     private Predicate<CarData> checkFirstOwnerYear() {
-        return p -> firstOwnerYear.apply(p) != null;
+        return p -> p.getYear() != null && p.getIsFirstOwner() != null && firstOwnerYear.apply(p) != null;
     }
     private Predicate<CarData> checkAccidentYear() {
-        return p -> accidentYear.apply(p) != null;
+        return p -> p.getYear() != null && p.getHadAccident() != null && accidentYear.apply(p) != null;
     }
 
     private Predicate<Adverts> checkYearA() {
@@ -173,28 +172,52 @@ public class ParametersService {
 
         List<Double> diffs = new ArrayList<>();
 
-        adverts.stream().filter(p -> applyAdvertFilters().test(p)).forEach(advert -> {
-            CarData formTemp = new CarData();
-            formTemp.setYear(advert.getYear());
+        adverts.stream()
+                .filter(p -> applyAdvertFilters().test(p))
+                .forEach(advert ->
+                        diffs.add(advert.getPrice() - calculateAdvertPrice(advert, w))
+                );
 
+        return (int) diffs.stream().mapToInt(i -> Math.abs(i.intValue())).average().getAsDouble() ;
+    }
+    public int calculateMedian(List<Adverts> adverts, double[] w) {
+        List<Double> diffs = new ArrayList<>();
 
-            diffs.add(advert.getPrice() - calculateAdvertPrice(advert, w));
-        });
+        adverts.stream()
+                .filter(p -> applyAdvertFilters().test(p))
+                .forEach(advert ->
+                        diffs.add(advert.getPrice() - calculateAdvertPrice(advert, w))
+                );
 
-
-        return diffs.stream().mapToInt(i -> Math.abs(i.intValue())).sum() / diffs.size();
+        int [] sortedDiffs = diffs.stream().mapToInt(i -> Math.abs(i.intValue())).sorted().toArray();
+        int medium = sortedDiffs.length /2;
+        if (sortedDiffs.length % 2 == 0 &&  sortedDiffs.length > 2)
+            return (sortedDiffs[medium - 1] + sortedDiffs[medium]) /2;
+        else
+            return sortedDiffs[medium];
     }
 
-    public List<String> getAppliedFiltersNames() { //TODO zmienic warunek przed add
+    public List<String> getAppliedFiltersNames() {
         List<String> appliedFilters = new ArrayList<>();
-        appliedFilters.add(isYear ? "isYear, " : "" );
-        appliedFilters.add(isMileage ? "isMileage, " : "" );
-        appliedFilters.add(isEngine ? "isEngine, " : "" );
-        appliedFilters.add(isColor ? "isColor, " : "" );
-        appliedFilters.add(isType ? "isType, " : "" );
-        appliedFilters.add(isFirstOwnerYear ? "isFirstOwnerYear, " : "" );
-        appliedFilters.add(isAccidentYear ? "isAccidentYear, " : "" );
+        if(isYear) appliedFilters.add("isYear");
+        if(isMileage) appliedFilters.add("isMileage");
+        if(isEngine) appliedFilters.add("isEngine");
+        if(isColor) appliedFilters.add("isColor");
+        if(isType) appliedFilters.add("isType");
+        if(isFirstOwnerYear) appliedFilters.add("isFirstOwnerYear");
+        if(isAccidentYear) appliedFilters.add("isAccidentYear" );
         return appliedFilters;
+    }
+
+    public String getAppliedFiltersNamesAndValues(double[] w) {
+        List<String> appliedFilters = getAppliedFiltersNames();
+        if (appliedFilters.size() != w.length)
+            return "Błąd - liczba wspołćzynników różna od liczby filtrów";
+        StringBuilder filtersNamesAndValues = new StringBuilder();
+        for (int i = 0; i < w.length; ++i) {
+            filtersNamesAndValues.append(appliedFilters.get(i) + " w: " + w[i] + ", ");
+        }
+        return filtersNamesAndValues.toString();
     }
     //niepotrzebne
     public void reset(){

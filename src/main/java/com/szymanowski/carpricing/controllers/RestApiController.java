@@ -49,17 +49,21 @@ public class RestApiController {
         LPResultDTO optimizationResult = lpService.optimize(adverts);
         Double price =  parametersService.calculatePrice(form, optimizationResult.getwParams());
         int averageDiff = parametersService.calculateDiffs(adverts, optimizationResult.getwParams());
-        String filtersInfo = parametersService.getAppliedFiltersNames().toString() + parametersService.getAppliedFiltersNames().size();
-        return createResponse(chartDTOS, optimizationResult, price != null ? price.intValue(): 0, averageDiff);
+        int median = parametersService.calculateMedian(adverts, optimizationResult.getwParams());
+        //String filtersInfo = parametersService.getAppliedFiltersNames().toString() + parametersService.getAppliedFiltersNames().size();
+        String filtersInfo = parametersService.getAppliedFiltersNamesAndValues(optimizationResult.getwParams());
+        return createResponse(chartDTOS, optimizationResult, price , averageDiff, median, filtersInfo);
 
     }
 
-    private RestResponse createResponse(List<ChartDTO> chartDTOS, LPResultDTO optimizationResult, int price, int averageDiff) {
+    private RestResponse createResponse(List<ChartDTO> chartDTOS, LPResultDTO optimizationResult, Double price, int averageDiff, int median, String filtersInfo) {
         RestResponse restResponse = new RestResponse();
         restResponse.setAverageDiff(averageDiff);
-        restResponse.setFormPrice(price);
+        restResponse.setMedian(median);
+        restResponse.setFormPrice(price != null ? price.intValue(): 0);
         restResponse.setLpResultDTO(optimizationResult);
         restResponse.setCharts(chartDTOS);
+        restResponse.setFiltersInfo(filtersInfo);
         return restResponse;
     }
 }

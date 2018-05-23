@@ -41,5 +41,25 @@ public class RestResponse {
     private int formPrice;
     private int averageDiff;
 
+    public int getMedian() {
+        return median;
+    }
+
+    public void setMedian(int median) {
+        this.median = median;
+    }
+
+    private int median;
+
+    public String getFiltersInfo() {
+        return filtersInfo;
+    }
+
+    public void setFiltersInfo(String filtersInfo) {
+        this.filtersInfo = filtersInfo;
+    }
+
+    private String filtersInfo;
+
 
 }
