@@ -17,6 +17,8 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,45 +34,66 @@ public class SearchService {
     @Autowired
     private AdvertsRepository advertsRepository;
 
-    // "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=";
+    // "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?page=1";
     public List<Adverts> search(CarData form) {
         List<Adverts> adverts = new ArrayList<>();
 
         String url = getCarUrl(form);
-        //TODO pobieranie page i wrzucanie do petli
-        for (int i = 1; i < 2; ++i) {
-            try {
-                Document doc = Jsoup.connect(url+i).get();
+        try {
+            Document doc = Jsoup.connect(url+1).get();
+            int numberOfPages = getNumberOfPages(doc);
 
-                List<String> hrefs = getAdvertLinks(doc);
+            for (int i = 1; i < 3; ++i) {//TODO zabezpieczenie na ilosc stron
+                try {
+                    Document pageList = Jsoup.connect(url + i).get();
 
-                int ONE_ADVERT_ONLY = 1;
-                if (ONE_ADVERT_ONLY == 1) {
-                    //TEMPORARY FOR TEST
-                    Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
-                    Adverts advert = new Adverts();
-                    populateModelData(form, advert);
-                    advertParser.populate(advertDoc, advert);
-                    adverts.add(advert);
-                    advertsRepository.save(advert);
-                } else {
-                    hrefs.forEach(href -> {
-                        try {
-                            Document advertDoc = Jsoup.connect(href).get();
-                            Adverts advert = new Adverts();
-                            advertParser.populate(advertDoc, advert);
-                            adverts.add(advert);
-                            advertsRepository.save(advert);
-                        } catch (IOException e) {
-                            LOG.info(e.getMessage());
-                        }
-                    });
+                    List<String> hrefs = getAdvertLinks(pageList);
+
+                    int ONE_ADVERT_ONLY = 1;
+                    if (ONE_ADVERT_ONLY == 1) {
+                        //TEMPORARY FOR TEST
+                        Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
+                        Adverts advert = new Adverts();
+                        populateModelData(form, advert);
+                        advertParser.populate(advertDoc, advert);
+                        adverts.add(advert);
+                        advertsRepository.save(advert);
+                    } else {
+                        hrefs.forEach(href -> {
+                            try {
+                                Document advertDoc = Jsoup.connect(href).get();
+                                Adverts advert = new Adverts();
+                                advertParser.populate(advertDoc, advert);
+                                adverts.add(advert);
+                                advertsRepository.save(advert);
+                            } catch (IOException e) {
+                                LOG.info(e.getMessage());
+                            }
+                        });
+                    }
+                } catch (IOException e) {
+                    LOG.info(e.getMessage());
                 }
-            } catch (IOException e) {
-                LOG.info(e.getMessage());
             }
+        } catch (IOException e) {
+            LOG.info(e.getMessage());
         }
         return adverts;
+    }
+
+    private int getNumberOfPages(Document doc) {
+        Optional<Elements> elements = Optional.ofNullable(doc.getElementsByClass("page"));
+        if (elements.isPresent()) {
+            OptionalInt max = elements.get().stream()
+                    .map(Element::text)
+                    .map(a -> a.replaceAll("[\\D]", ""))
+                    .filter(f -> !StringUtils.isEmpty(f))
+                    .mapToInt(Integer::valueOf)
+                    .max();
+            if (max.isPresent())
+                return max.getAsInt();
+        }
+        return 1;
     }
 
     private void populateModelData(CarData form, Adverts advert) {
@@ -94,7 +117,7 @@ public class SearchService {
         return links.stream().map(a -> a.attributes()).map(a -> a.get("href")).collect(Collectors.toList());
     }
 
-    //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
+   /* //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
     public List<Adverts> searchWithoutOpeningAdverts(CarData form) {
         String url = "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&" + form.getMake();
 
@@ -115,8 +138,8 @@ public class SearchService {
                     advert.setPrice(Integer.parseInt(links.get(i).text().replaceAll("[\\D]", "")));
                     advert.setYear(Integer.parseInt(params.get(0)));
                     advert.setMileage(Integer.parseInt(params.get(1).replaceAll("[\\D]", "")));
-                    /*advert.setEngineCapacity(Integer.parseInt(params.get(2).substring(0, params.get(3).length() - 2).replaceAll("[\\D]", "")));
-                    advert.setFuel(params.get(3));*/
+                    *//*advert.setEngineCapacity(Integer.parseInt(params.get(2).substring(0, params.get(3).length() - 2).replaceAll("[\\D]", "")));
+                    advert.setFuel(params.get(3));*//*
                     adverts.add(advert);
                     advertsRepository.save(advert);
 
@@ -129,7 +152,7 @@ public class SearchService {
         }
         return null;
     }
-
+*/
     public List<Adverts> searchInDatabase(CarData form) {
         return advertsRepository.findByMakeAndModel(form.getMake(), form.getModel());
     }

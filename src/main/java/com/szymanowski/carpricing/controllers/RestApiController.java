@@ -9,6 +9,7 @@ import com.szymanowski.carpricing.repository.Adverts;
 import com.szymanowski.carpricing.services.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -47,26 +48,29 @@ public class RestApiController {
        // searchService.search(form);
         List<Adverts> adverts = searchService.search(form);
 
-       // descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
-        List<ChartDTO> chartDTOS = approximationService.approximate(adverts, form);
-        parametersService.calculateFilters(form);
-        LPResultDTO optimizationResult = lpService.optimize(adverts);
-        Double price;
-        int averageDiff;
-        int median;
-        if (ApproximationMethod.LINEAR_PROGRAMMING.equals(form.getMethod())) {
-             price = priceCalculatorService.calculatePrice(form, optimizationResult.getwParams());
-             averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams());
-             median = priceCalculatorService.calculateMedian(adverts, optimizationResult.getwParams());
-        } else {
-             price = 0.0;
-             averageDiff = priceCalculatorService.calculateDiffsMethodB(adverts);
-             median = priceCalculatorService.calculateMedianB(adverts);
-        }
+        if(!CollectionUtils.isEmpty(adverts)) {
+            // descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
+            List<ChartDTO> chartDTOS = approximationService.approximate(adverts, form);
+            parametersService.calculateFilters(form);
+            LPResultDTO optimizationResult = lpService.optimize(adverts);
+            Double price;
+            int averageDiff;
+            int median;
+            if (ApproximationMethod.LINEAR_PROGRAMMING.equals(form.getMethod())) {
+                price = priceCalculatorService.calculatePrice(form, optimizationResult.getwParams());
+                averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams());
+                median = priceCalculatorService.calculateMedian(adverts, optimizationResult.getwParams());
+            } else {
+                price = 0.0;
+                averageDiff = priceCalculatorService.calculateDiffsMethodB(adverts);
+                median = priceCalculatorService.calculateMedianB(adverts);
+            }
 
-        //String filtersInfo = parametersService.getAppliedFiltersNames().toString() + parametersService.getAppliedFiltersNames().size();
-        String filtersInfo = parametersService.getAppliedFiltersNamesAndValues(optimizationResult.getwParams());
-        return createSearchRespone(chartDTOS, optimizationResult, price , averageDiff, median, filtersInfo);
+            String filtersInfo = parametersService.getAppliedFiltersNamesAndValues(optimizationResult.getwParams());
+            return createSearchRespone(chartDTOS, optimizationResult, price, averageDiff, median, filtersInfo);
+        } else {
+            return createSearchRespone("Nie znaleziono żadnych ogłoszeń");
+        }
 
     }
 
@@ -94,6 +98,11 @@ public class RestApiController {
         restResponse.setLpResultDTO(optimizationResult);
         restResponse.setCharts(chartDTOS);
         restResponse.setFiltersInfo(filtersInfo);
+        return restResponse;
+    }
+    private RestResponse createSearchRespone(String message) {
+        RestResponse restResponse = new RestResponse();
+        restResponse.setMessage(message);
         return restResponse;
     }
 }

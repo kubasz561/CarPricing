@@ -7,7 +7,13 @@ export default class Results extends Component {
         return (
             <div id="results">
                 {
-                this.props.response &&
+                this.props.response &&  this.props.response.message &&
+                <div>
+                    <h2> {this.props.response.message}  </h2>
+                </div>
+                }
+                {
+                this.props.response &&  !this.props.response.message &&
                 <div>
                     <h2>Proponowana Cena: {this.props.response.formPrice} zł </h2>
                     <h4>Średnie odchylenie od ceny: {this.props.response.averageDiff} zł </h4>
@@ -21,12 +27,12 @@ export default class Results extends Component {
 
                 <br/>
                 {
-                    this.props.response && this.props.response.charts.map(chart =>
+                    this.props.response && this.props.response.charts && this.props.response.charts.map(chart =>
                         chart.formY && <p>Parametr: {chart.type} / Wartosc: {chart.formX} / Cena: {chart.formY} </p>
                     )
                 }
                 {
-                    this.props.response && this.props.response.charts.map(chart =>
+                    this.props.response && this.props.response.charts && this.props.response.charts.map(chart =>
                         <div>
                             <div>
                                 <Plot

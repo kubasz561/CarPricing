@@ -137,15 +137,9 @@ export default class CarForm extends Component {
                     Typ nadwozia:
                 </label>
                 <select name="type" value={this.state.type} onChange={this.handleInputChange}>
-                    <option value="Coupe">Coupe</option>
-                    <option value="Kompakt">Kompakt</option>
-                    <option value="Sedan">Sedan</option>
-                    <option value="Kabriolet">Kabriolet</option>
-                    <option value="Auta miejskie">Auta miejskie</option>
-                    <option value="Auta małe">Auta małe</option>
-                    <option value="Kombi">Kombi</option>
-                    <option value="Minivan">Minivan</option>
-                    <option value="SUV">SUV</option>
+                    {this.getTypeList().map(year =>
+                        <option value={year}>{year}</option>
+                    )}
                 </select>
                 <br/>
                 <label>
@@ -248,6 +242,9 @@ export default class CarForm extends Component {
     }
     getColorList (){
         return ["Beżowy","Biały","Bordowy","Brązowy","Czarny","Czerwony","Fioletowy","Niebieski","Srebrny","Szary","Zielony","Złoty","Żółty","Inny kolor"];
+    }
+    getTypeList (){
+        return ["Sedan","Kombi","Kompakt","SUV","Coupe","Auta miejskie","Auta małe","Minivan"];
     }
     submit(e) {
         e.preventDefault();
