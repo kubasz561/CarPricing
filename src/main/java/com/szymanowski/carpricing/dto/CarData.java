@@ -6,6 +6,7 @@ public class CarData {
 
     private String marka;
     private String model;
+    private String version;
 
     private Integer year;
     private Integer mileage;
@@ -141,6 +142,15 @@ public class CarData {
 
     public void setMethod(ApproximationMethod method) {
         this.method = method;
+    }
+
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
 

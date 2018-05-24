@@ -30,7 +30,8 @@ public class RestApiController {
     ParametersService parametersService;
     @Autowired
     PriceCalculatorService priceCalculatorService;
-
+    @Autowired
+    MakeModelService makeModelService;
     @Autowired
     LPService lpService;
 
@@ -64,11 +65,27 @@ public class RestApiController {
 
         //String filtersInfo = parametersService.getAppliedFiltersNames().toString() + parametersService.getAppliedFiltersNames().size();
         String filtersInfo = parametersService.getAppliedFiltersNamesAndValues(optimizationResult.getwParams());
-        return createResponse(chartDTOS, optimizationResult, price , averageDiff, median, filtersInfo);
+        return createSearchRespone(chartDTOS, optimizationResult, price , averageDiff, median, filtersInfo);
 
     }
 
-    private RestResponse createResponse(List<ChartDTO> chartDTOS, LPResultDTO optimizationResult, Double price, int averageDiff, int median, String filtersInfo) {
+    @RequestMapping(value = "/getMakes", method = RequestMethod.GET)
+    public List<String> getMakes() {
+        return makeModelService.getAllMakes();
+    }
+
+    @RequestMapping(value = "/getModels", method = RequestMethod.GET)
+    public List<String> getModels(CarData form) {
+        return makeModelService.getModelsForMake(form.getMarka());
+    }
+
+    @RequestMapping(value = "/getVersions", method = RequestMethod.GET)
+    public List<String> getVersions(CarData form) {
+        return makeModelService.getVersionForMakeModel(form.getMarka(), form.getModel());
+    }
+
+
+    private RestResponse createSearchRespone(List<ChartDTO> chartDTOS, LPResultDTO optimizationResult, Double price, int averageDiff, int median, String filtersInfo) {
         RestResponse restResponse = new RestResponse();
         restResponse.setAverageDiff(averageDiff);
         restResponse.setMedian(median);

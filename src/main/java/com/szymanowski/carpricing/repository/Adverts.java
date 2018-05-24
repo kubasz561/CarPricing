@@ -1,6 +1,7 @@
 package com.szymanowski.carpricing.repository;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Adverts {
@@ -9,6 +10,7 @@ public class Adverts {
     private Integer id;
 
     private Long advertId;
+    private Date date;
 
     private String name;
     private Integer price;
@@ -169,4 +171,13 @@ public class Adverts {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
 }

@@ -23,37 +23,25 @@ public class SearchService {
     private static final Logger LOG = LoggerFactory.getLogger(SearchService.class);
 
     private static final String BASE = "https://www.otomoto.pl/osobowe/";
-    private static final String YEAR_MID = "?search%5Bfilter_float_year%3Ato%5D=";
-    private static final String END = "&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=";
+    private static final String END = "/?page=";
 
     @Autowired
     AdvertParser advertParser;
+
     @Autowired
     private AdvertsRepository advertsRepository;
 
-    //https://www.otomoto.pl/osobowe/bmw/seria-3/?search%5Bnew_used%5D=on;
-    //https://www.otomoto.pl/osobowe/bmw/seria-3/od-2010/?search%5Bfilter_float_year%3Ato%5D=2010&search%5Bnew_used%5D=on
-    //https://www.otomoto.pl/osobowe/bmw/seria-3/od-2003/?search%5Bfilter_float_year%3Ato%5D=2009&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=2
-    // https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
-    //https://www.otomoto.pl/osobowe/volkswagen/golf/od-2003/?search%5Bfilter_float_year%3Ato%5D=2009&search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=
+    // "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=";
     public List<Adverts> search(CarData form) {
         List<Adverts> adverts = new ArrayList<>();
 
-        /*String url;
-        if (form.getYear() != null) {
-            url = BASE + form.getMarka() + "/" + form.getModel() + "/od-" + form.getYear() + YEAR_MID + form.getYear() + "$" + END;
-        } else {
-            url = BASE + form.getMarka() + "/" + form.getModel() + "/?" + END;
-        }
-*/
-        String url= "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=";
-        for (int i = 2; i < 3; ++i) {
+        String url = getCarUrl(form);
+        //TODO pobieranie page i wrzucanie do petli
+        for (int i = 1; i < 2; ++i) {
             try {
                 Document doc = Jsoup.connect(url+i).get();
 
-                Elements links = doc.getElementsByClass("offer-item__photo-link");
-                List<String> hrefs = links.stream().map(a -> a.attributes()).map(a -> a.get("href")).collect(Collectors.toList());
-
+                List<String> hrefs = getAdvertLinks(doc);
 
                 int ONE_ADVERT_ONLY = 1;
                 if (ONE_ADVERT_ONLY == 1) {
@@ -83,8 +71,23 @@ public class SearchService {
         return adverts;
     }
 
+    private String getCarUrl(CarData form) {
+        String url;
+        if(form.getVersion() != null){
+            url = BASE + form.getMarka() + "/" + form.getModel() + END;
+        } else {
+            url = BASE + form.getMarka() + "/" + form.getModel() + "/" + form.getVersion() + END;
+        }
+        return url;
+    }
+
+    private List<String> getAdvertLinks(Document doc) {
+        Elements links = doc.getElementsByClass("offer-item__photo-link");
+        return links.stream().map(a -> a.attributes()).map(a -> a.get("href")).collect(Collectors.toList());
+    }
+
     //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
-    public List<Adverts> searchGolf(CarData form) {
+    public List<Adverts> searchWithoutOpeningAdverts(CarData form) {
         String url = "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&" + form.getMarka();
 
         try {

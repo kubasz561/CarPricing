@@ -7,6 +7,7 @@ import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -41,6 +42,7 @@ public class AdvertParser {
 
         target.setName(advertTitle);
         target.setAdvertId(advertID);
+        target.setDate(new Date());
         target.setPrice(calculatePrice(advertPrice, isNettoPrice ));
 
         target.setMake(keys.get("Marka pojazdu"));
