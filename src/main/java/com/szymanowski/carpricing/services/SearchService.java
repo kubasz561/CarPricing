@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,6 +49,7 @@ public class SearchService {
                     //TEMPORARY FOR TEST
                     Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
                     Adverts advert = new Adverts();
+                    populateModelData(form, advert);
                     advertParser.populate(advertDoc, advert);
                     adverts.add(advert);
                     advertsRepository.save(advert);
@@ -71,12 +73,18 @@ public class SearchService {
         return adverts;
     }
 
+    private void populateModelData(CarData form, Adverts advert) {
+        advert.setMake(form.getMake());
+        advert.setModel(form.getModel());
+        advert.setVersion(form.getVersion());
+    }
+
     private String getCarUrl(CarData form) {
         String url;
-        if(form.getVersion() != null){
-            url = BASE + form.getMarka() + "/" + form.getModel() + END;
+        if(StringUtils.isEmpty(form.getVersion())){
+            url = BASE + form.getMake() + "/" + form.getModel() + END;
         } else {
-            url = BASE + form.getMarka() + "/" + form.getModel() + "/" + form.getVersion() + END;
+            url = BASE + form.getMake() + "/" + form.getModel() + "/" + form.getVersion() + END;
         }
         return url;
     }
@@ -88,7 +96,7 @@ public class SearchService {
 
     //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
     public List<Adverts> searchWithoutOpeningAdverts(CarData form) {
-        String url = "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&" + form.getMarka();
+        String url = "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&" + form.getMake();
 
         try {
             Document doc = Jsoup.connect(url).get();
@@ -123,6 +131,6 @@ public class SearchService {
     }
 
     public List<Adverts> searchInDatabase(CarData form) {
-        return advertsRepository.findByMakeAndModel(form.getMarka(), form.getModel());
+        return advertsRepository.findByMakeAndModel(form.getMake(), form.getModel());
     }
 }

@@ -18,6 +18,8 @@ public class Adverts {
     private String make;
     private String model;
 
+    private String version;
+
     private Integer year;
 
     private Integer mileage;
@@ -178,6 +180,14 @@ public class Adverts {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
 }

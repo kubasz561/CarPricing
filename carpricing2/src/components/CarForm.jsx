@@ -5,8 +5,9 @@ export default class CarForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            marka: "Volkswagen",
-            model: "Golf",
+            make: "",
+            model: "",
+            version: "",
             year: 2005,
             fuel: "Benzyna",
             mileage: 150000,
@@ -18,37 +19,72 @@ export default class CarForm extends Component {
             hadAccident: true,
             isFirstOwner: false,
             description: "...opis",
-            method: "LINEAR_PROGRAMMING"
+            method: "LINEAR_PROGRAMMING",
+            makeList:[],
+            modelList:[],
+            versionList:[]
         };
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleMakeInputChange = this.handleMakeInputChange.bind(this);
+        this.handleModelInputChange = this.handleModelInputChange.bind(this);
         this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
         this.handleResponse = this.handleResponse.bind(this);
         this.submit = this.submit.bind(this);
+        this.getMake = this.getMake.bind(this);
+        this.getModel = this.getModel.bind(this);
+        this.getVersion = this.getVersion.bind(this);
+        this.getYearList = this.getYearList.bind(this);
+        this.getColorList = this.getColorList.bind(this);
+    }
+
+    componentDidMount(){
+        this.getMake()
     }
 
     render() {
         return (
             <form onSubmit={this.submit} name="theForm">
                 <label>
-                    MARKA:
-                    <input
-                        name="marka"
+                    Marka:
+                    <select
+                        name="make"
                         type="text"
-                        value={this.state.marka}
-                        onChange={this.handleInputChange}/>
+                        value={this.state.make}
+                        onChange={this.handleMakeInputChange}>
+                        {this.state.makeList.map(make =>
+                            <option value={make}>{make}</option>
+                        )}
+                    </select>
                 </label>
                 <br/>
                 <label>
-                    MODEL:
-                    <input
+                    Model:
+                    <select
                         name="model"
                         type="text"
                         value={this.state.model}
-                        onChange={this.handleInputChange}/>
+                        onChange={this.handleModelInputChange}>
+                        {this.state.modelList.map(model =>
+                            <option value={model}>{model}</option>
+                        )}
+                    </select>
                 </label>
                 <br/>
                 <label>
-                    ROK:
+                    Wersja:
+                    <select
+                        name="version"
+                        type="text"
+                        value={this.state.version}
+                        onChange={this.handleInputChange}>
+                        {this.state.versionList.map(version =>
+                            <option value={version}>{version}</option>
+                        )}
+                    </select>
+                </label>
+                <br/>
+                <label>
+                    Rok:
                 </label>
                 {/*<SelectYear
                         name="year"
@@ -56,30 +92,9 @@ export default class CarForm extends Component {
                         onChange={this.handleInputChange}
                         />*/}
                 <select name="year" value={this.state.year} onChange={this.handleInputChange}>
-                    <option value="2007">2018</option>
-                    <option value="2007">2007</option>
-                    <option value="2006">2006</option>
-                    <option value="2005">2005</option>
-                    <option value="2004">2004</option>
-                    <option value="2003">2003</option>
-                    <option value="2002">2002</option>
-                    <option value="2001">2001</option>
-                    <option value="2000">2000</option>
-                    <option value="1999">1999</option>
-                    <option value="1998">1998</option>
-                    <option value="1997">1997</option>
-                    <option value="1996">1996</option>
-                    <option value="1995">1995</option>
-                    <option value="1994">1994</option>
-                    <option value="1993">1993</option>
-                    <option value="1992">1992</option>
-                    <option value="1991">1991</option>
-                    <option value="1990">1990</option>
-                    <option value="1989">1989</option>
-                    <option value="1988">1988</option>
-                    <option value="1987">1987</option>
-                    <option value="1986">1986</option>
-                    <option value="1985">1985</option>
+                    {this.getYearList().map(year =>
+                        <option value={year}>{year}</option>
+                    )}
                 </select>
                 <br/>
                 <label>
@@ -101,7 +116,7 @@ export default class CarForm extends Component {
                 </label>
                 <br/>
                 <label>
-                    Pojemnosc:
+                    Pojemność:
                     <input
                         name="engineCapacity"
                         type="text"
@@ -122,20 +137,27 @@ export default class CarForm extends Component {
                     Typ nadwozia:
                 </label>
                 <select name="type" value={this.state.type} onChange={this.handleInputChange}>
-                    <option value="coupe">Coupe</option>
-                    <option value="hatchback">Kompakt</option>
-                    <option value="sedan">Sedan</option>
-                    <option value="cabrio">Cabrio</option>
-                    <option value="cabrio">Auta miejskie</option>
+                    <option value="Coupe">Coupe</option>
+                    <option value="Kompakt">Kompakt</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="Kabriolet">Kabriolet</option>
+                    <option value="Auta miejskie">Auta miejskie</option>
+                    <option value="Auta małe">Auta małe</option>
+                    <option value="Kombi">Kombi</option>
+                    <option value="Minivan">Minivan</option>
+                    <option value="SUV">SUV</option>
                 </select>
                 <br/>
                 <label>
                     Kolor:
-                    <input
+                    <select
                         name="color"
-                        type="text"
                         value={this.state.color}
-                        onChange={this.handleInputChange}/>
+                        onChange={this.handleInputChange}>
+                        {this.getColorList().map(year =>
+                            <option value={year}>{year}</option>
+                        )}
+                    </select>
                 </label>
                 <br/>
                 <label>
@@ -196,6 +218,15 @@ export default class CarForm extends Component {
         });
     }
 
+    handleMakeInputChange(event) {
+        this.handleInputChange(event);
+        this.getModel(event);
+    }
+    handleModelInputChange(event) {
+        this.handleInputChange(event);
+        this.getVersion(event);
+    }
+
     handleCheckboxChange(event) {
         const target = event.target;
         const name = target.name;
@@ -208,9 +239,17 @@ export default class CarForm extends Component {
     handleResponse(result) {
         this.props.handleResponse(result)
     }
-
+    getYearList (){
+        var years = [];
+        for (var i = 2018; i >= 1990; i--) {
+            years.push(i);
+        }
+        return years;
+    }
+    getColorList (){
+        return ["Beżowy","Biały","Bordowy","Brązowy","Czarny","Czerwony","Fioletowy","Niebieski","Srebrny","Szary","Zielony","Złoty","Żółty","Inny kolor"];
+    }
     submit(e) {
-        console.log("SUBMIT")
         e.preventDefault();
         let _this2 = this;
         $.ajax({
@@ -219,6 +258,40 @@ export default class CarForm extends Component {
             method: 'POST',
             success: function (result) {
                 _this2.handleResponse(result)
+            }
+        });
+    }
+    getMake() {
+        let _this2 = this;
+        $.ajax({
+            url: "/api/getMakes",
+            method: 'GET',
+            success: function (result) {
+                _this2.setState({makeList:result})
+            }
+        });
+    }
+    getModel(e) {
+        e.preventDefault();
+        let _this2 = this;
+        $.ajax({
+            url: "/api/getModels",
+            data: {make: e.target.value},
+            method: 'GET',
+            success: function (result) {
+                _this2.setState({modelList:result})
+            }
+        });
+    }
+    getVersion(e){
+        e.preventDefault();
+        let _this2 = this;
+        $.ajax({
+            url: "/api/getVersions",
+            data: {make:this.state.make, model: e.target.value},
+            method: 'GET',
+            success: function (result) {
+                _this2.setState({versionList:result})
             }
         });
     }

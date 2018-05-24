@@ -45,8 +45,6 @@ public class AdvertParser {
         target.setDate(new Date());
         target.setPrice(calculatePrice(advertPrice, isNettoPrice ));
 
-        target.setMake(keys.get("Marka pojazdu"));
-        target.setModel(keys.get("Model pojazdu"));
         target.setYear(Integer.parseInt(keys.get("Rok produkcji").replaceAll("[\\D]", "")));
         target.setColor(keys.get("Kolor"));
         if(keys.containsKey("Moc")) {

@@ -11,6 +11,7 @@ import com.szymanowski.carpricing.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -75,13 +76,13 @@ public class RestApiController {
     }
 
     @RequestMapping(value = "/getModels", method = RequestMethod.GET)
-    public List<String> getModels(CarData form) {
-        return makeModelService.getModelsForMake(form.getMarka());
+    public List<String> getModels(@RequestParam String make) {
+        return makeModelService.getModelsForMake(make);
     }
 
     @RequestMapping(value = "/getVersions", method = RequestMethod.GET)
-    public List<String> getVersions(CarData form) {
-        return makeModelService.getVersionForMakeModel(form.getMarka(), form.getModel());
+    public List<String> getVersions(@RequestParam String make, @RequestParam String model) {
+        return makeModelService.getVersionForMakeModel(make,model);
     }
 
 

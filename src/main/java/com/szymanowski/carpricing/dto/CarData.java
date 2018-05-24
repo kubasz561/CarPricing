@@ -4,7 +4,7 @@ import com.szymanowski.carpricing.constants.ApproximationMethod;
 
 public class CarData {
 
-    private String marka;
+    private String make;
     private String model;
     private String version;
 
@@ -31,12 +31,12 @@ public class CarData {
     }
 
 
-    public String getMarka() {
-        return marka;
+    public String getMake() {
+        return make;
     }
 
-    public void setMarka(String marka) {
-        this.marka = marka;
+    public void setMake(String make) {
+        this.make = make;
     }
 
     public String getModel() {

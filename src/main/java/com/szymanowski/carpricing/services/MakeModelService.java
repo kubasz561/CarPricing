@@ -5,6 +5,7 @@ import com.szymanowski.carpricing.repository.MakeModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -19,12 +20,14 @@ public class MakeModelService {
     public List<String> getAllMakes(){
          return StreamSupport.stream(makeModelRepository.findAll().spliterator(), false)
                  .map(MakeModel::getMake)
+                 .distinct()
                  .collect(Collectors.toList());
 
     }
     public List<String> getModelsForMake(String make){
         return makeModelRepository.findByMake(make).stream()
                 .map(MakeModel::getModel)
+                .distinct()
                 .collect(Collectors.toList());
     }
     public List<String> getVersionForMakeModel(String make, String model){
@@ -34,7 +37,7 @@ public class MakeModelService {
         if(version.isPresent()){
             return Arrays.stream(version.get().split(",")).collect(Collectors.toList());
         } else {
-            return null;
+            return new ArrayList<>();
         }
 
     }
