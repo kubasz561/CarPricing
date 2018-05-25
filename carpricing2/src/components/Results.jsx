@@ -19,21 +19,17 @@ export default class Results extends Component {
                     <h4>Średnie odchylenie od ceny: {this.props.response.averageDiff} zł </h4>
                     <h4>Mediana odchylenia od ceny: {this.props.response.median} zł </h4>
                     <h4>Obliczone na podstawie {this.props.response.lpResultDTO.filteredAdvertsCount} ogłoszeń </h4>
-                    <h4>Parametry wzięte pod uwagę: ilość: {this.props.response.filtersInfo.split(",").length-1}, {this.props.response.filtersInfo.split(",").map(parameter => <h5>{parameter}</h5> )} </h4>
-                    <h4>Wartości
-                        współczynników: {this.props.response.lpResultDTO.wParams.map(w => " " + w + ", ")} solution: {this.props.response.lpResultDTO.totalDiff} </h4>
+                    <h4>Parametry wzięte pod uwagę: ilość: {this.props.response.filtersInfo.split(",").length-1}, {this.props.response.filtersInfo.split(",").map(parameter => <h4>{parameter}</h4> )} </h4>
+                    <h4>Wartości współczynników: {this.props.response.lpResultDTO.wParams.map(w => " " + w + ", ")} solution: {this.props.response.lpResultDTO.totalDiff} </h4>
                 </div>
                 }
 
                 <br/>
+                <div className="grid-container">
+
                 {
                     this.props.response && this.props.response.charts && this.props.response.charts.map(chart =>
-                        chart.formY && <p>Parametr: {chart.type} / Wartosc: {chart.formX} / Cena: {chart.formY} </p>
-                    )
-                }
-                {
-                    this.props.response && this.props.response.charts && this.props.response.charts.map(chart =>
-                        <div>
+                        <div className="grid-item">
                             <div>
                                 <Plot
                                     data={[
@@ -55,6 +51,7 @@ export default class Results extends Component {
                                             x: [chart.formX],
                                             y: [chart.formY],
                                             type: 'scatter',
+                                            title: "Twoje auto",
                                             mode: chart.mainChartMode,
                                             marker: {color: 'green', size: 15}
                                         }
@@ -66,11 +63,12 @@ export default class Results extends Component {
                                 {chart.r && <span>R: {chart.r} </span>}
                                 {chart.r && <br/>}
                                 {chart.formY &&
-                                <h5>Parametr: {chart.type} / Wartosc: {chart.formX} / Cena: {chart.formY} </h5>}
+                                <h4>Parametr: {chart.type} / Wartosc: {chart.formX} / Cena: {chart.formY} </h4>}
                             </div>
                         </div>
                     )
                 }
+                </div>
 
             </div>
         );

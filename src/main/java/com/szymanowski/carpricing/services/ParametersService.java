@@ -150,13 +150,13 @@ public class ParametersService {
 
     public List<String> getAppliedFiltersNames() {
         List<String> appliedFilters = new ArrayList<>();
-        if(isYear) appliedFilters.add("isYear");
-        if(isMileage) appliedFilters.add("isMileage");
-        if(isEngine) appliedFilters.add("isEngine");
-        if(isColor) appliedFilters.add("isColor");
-        if(isType) appliedFilters.add("isType");
-        if(isFirstOwnerYear) appliedFilters.add("isFirstOwnerYear");
-        if(isAccidentYear) appliedFilters.add("isAccidentYear" );
+        if(isYear) appliedFilters.add(Params.YEAR.getValue());
+        if(isMileage) appliedFilters.add(Params.MILEAGE.getValue());
+        if(isEngine) appliedFilters.add(Params.ENGINE.getValue());
+        if(isColor) appliedFilters.add(Params.COLOR.getValue());
+        if(isType) appliedFilters.add(Params.TYPE.getValue());
+        if(isFirstOwnerYear) appliedFilters.add(Params.FIRST_OWNER_YEAR.getValue());
+        if(isAccidentYear) appliedFilters.add(Params.ACCIDENT_YEAR.getValue() );
         return appliedFilters;
     }
 

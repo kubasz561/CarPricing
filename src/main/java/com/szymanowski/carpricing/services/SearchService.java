@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,26 +37,19 @@ public class SearchService {
 
         String url = getCarUrl(form);
         try {
-            Document doc = Jsoup.connect(url+1).get();
+            Document doc = Jsoup.connect(url + 1).get();
             int numberOfPages = getNumberOfPages(doc);
 
-            for (int i = 1; i < 3; ++i) {//TODO zabezpieczenie na ilosc stron
+            for (int i = 1; i < 2; ++i) {//TODO zabezpieczenie na ilosc stron
                 try {
                     Document pageList = Jsoup.connect(url + i).get();
 
                     List<String> hrefs = getAdvertLinks(pageList);
 
-                    int ONE_ADVERT_ONLY = 1;
-                    if (ONE_ADVERT_ONLY == 1) {
-                        //TEMPORARY FOR TEST
-                        Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
-                        Adverts advert = new Adverts();
-                        populateModelData(form, advert);
-                        advertParser.populate(advertDoc, advert);
-                        adverts.add(advert);
-                        advertsRepository.save(advert);
-                    } else {
+                    int ONE_ADVERT_ONLY = 0;
+                    if (!hrefs.isEmpty() && ONE_ADVERT_ONLY == 0) {
                         hrefs.forEach(href -> {
+                            sleep();
                             try {
                                 Document advertDoc = Jsoup.connect(href).get();
                                 Adverts advert = new Adverts();
@@ -70,6 +60,14 @@ public class SearchService {
                                 LOG.info(e.getMessage());
                             }
                         });
+                    } else if (!hrefs.isEmpty()) {
+                        //TEMPORARY FOR TEST
+                        Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
+                        Adverts advert = new Adverts();
+                        populateModelData(form, advert);
+                        advertParser.populate(advertDoc, advert);
+                        adverts.add(advert);
+                        advertsRepository.save(advert);
                     }
                 } catch (IOException e) {
                     LOG.info(e.getMessage());
@@ -79,6 +77,19 @@ public class SearchService {
             LOG.info(e.getMessage());
         }
         return adverts;
+    }
+
+    private void sleep() {
+        Random r = new Random();
+        int low = 1;
+        int high = 4;
+        int result = r.nextInt(high-low) + low;
+        int ms = result * 500;
+        try {
+            Thread.sleep((long) (ms));
+        } catch (InterruptedException e) {
+            LOG.info(e.getMessage());
+        }
     }
 
     private int getNumberOfPages(Document doc) {

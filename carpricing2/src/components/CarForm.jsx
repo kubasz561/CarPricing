@@ -22,7 +22,9 @@ export default class CarForm extends Component {
             method: "LINEAR_PROGRAMMING",
             makeList:[],
             modelList:[],
-            versionList:[]
+            versionList:[],
+            loading:false,
+            message:null
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleMakeInputChange = this.handleMakeInputChange.bind(this);
@@ -198,6 +200,8 @@ export default class CarForm extends Component {
                 </label>
                 <br/>
                 <input type="submit" value="Submit"/>
+                {this.state.loading && <h1>Loading...</h1>}
+                {this.state.message && <h1>{this.state.message}</h1>}
             </form>
         );
     }
@@ -247,6 +251,7 @@ export default class CarForm extends Component {
         return ["Sedan","Kombi","Kompakt","SUV","Coupe","Auta miejskie","Auta małe","Minivan"];
     }
     submit(e) {
+        this.setState({loading:true,message:null});
         e.preventDefault();
         let _this2 = this;
         $.ajax({
@@ -254,7 +259,11 @@ export default class CarForm extends Component {
             data: this.state,
             method: 'POST',
             success: function (result) {
-                _this2.handleResponse(result)
+                _this2.handleResponse(result);
+                _this2.setState({loading:false});
+            },
+            error: function (result) {
+                _this2.setState({loading:false, message:"500 Internal server error"});
             }
         });
     }
