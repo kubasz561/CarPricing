@@ -53,6 +53,7 @@ public class SearchService {
                             try {
                                 Document advertDoc = Jsoup.connect(href).get();
                                 Adverts advert = new Adverts();
+                                populateModelData(form, advert);
                                 advertParser.populate(advertDoc, advert);
                                 adverts.add(advert);
                                 advertsRepository.save(advert);
