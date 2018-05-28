@@ -44,9 +44,7 @@ public class RestApiController {
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public RestResponse search(CarData form) {
-        Adverts clientCar = new Adverts();
-       // searchService.search(form);
-        List<Adverts> adverts = searchService.search(form);
+        List<Adverts> adverts = form.getIsNew() ? searchService.search(form) : searchService.searchInDatabase(form);
 
         if(!CollectionUtils.isEmpty(adverts)) {
             // descriptionAnalyzerService.prepareKeywordPriceMap(adverts);

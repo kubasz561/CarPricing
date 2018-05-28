@@ -25,19 +25,19 @@ public class ApproximationService {
     public List<ChartDTO> approximate(List<Adverts> adverts, CarData form){
         List<ChartDTO> charts = new ArrayList<>();
 
-        charts.add(mileageRegression(adverts, form.getMileage()));
         charts.add(yearRegression(adverts, Integer.valueOf(form.getYear())));
+        charts.add(mileageRegression(adverts, form.getMileage()));
 
         charts.add(engineMean(adverts, Utils.getEngineName(form)));
+        charts.add(typeMean(adverts, form.getType()));
+        charts.add(colorMean(adverts, form.getColor()));
 
         charts.add(accidentMean(adverts,  Utils.appendYearToParam(form, form.getHadAccident())));
         charts.add(firstOwnerMean(adverts, Utils.appendYearToParam(form, form.getIsFirstOwner())));
 
-        charts.add(colorMean(adverts, form.getColor()));
-        charts.add(typeMean(adverts, form.getType()));
 
-        charts.add(colorYearMean(adverts, Utils.appendYearToParam(form, form.getColor())));
-        charts.add(typeYearMean(adverts,Utils.appendYearToParam(form, form.getType())));
+        //charts.add(colorYearMean(adverts, Utils.appendYearToParam(form, form.getColor())));
+        //charts.add(typeYearMean(adverts,Utils.appendYearToParam(form, form.getType())));
 /*
         charts.add(fuelMean(adverts));
         charts.add(powerMean(adverts,form.getPower().toString()+" KM"));

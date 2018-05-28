@@ -166,7 +166,7 @@ public class ParametersService {
             return "Błąd - liczba wspołćzynników różna od liczby filtrów";
         StringBuilder filtersNamesAndValues = new StringBuilder();
         for (int i = 0; i < w.length; ++i) {
-            filtersNamesAndValues.append(appliedFilters.get(i) + " w: " + w[i] + ", ");
+            filtersNamesAndValues.append(appliedFilters.get(i) + " ; " + w[i] + ", ");
         }
         return filtersNamesAndValues.toString();
     }

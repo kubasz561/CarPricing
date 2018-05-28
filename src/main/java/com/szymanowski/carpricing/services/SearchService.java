@@ -39,6 +39,7 @@ public class SearchService {
         try {
             Document doc = Jsoup.connect(url + 1).get();
             int numberOfPages = getNumberOfPages(doc);
+            wait3();//TODO sprawdzenie ajax call > 3min
 
             for (int i = 1; i < 2; ++i) {//TODO zabezpieczenie na ilosc stron
                 try {
@@ -46,10 +47,10 @@ public class SearchService {
 
                     List<String> hrefs = getAdvertLinks(pageList);
 
-                    int ONE_ADVERT_ONLY = 0;
+                    int ONE_ADVERT_ONLY = 1;
                     if (!hrefs.isEmpty() && ONE_ADVERT_ONLY == 0) {
                         hrefs.forEach(href -> {
-                            sleep();
+                            sleep();//TODO randomizer
                             try {
                                 Document advertDoc = Jsoup.connect(href).get();
                                 Adverts advert = new Adverts();
@@ -88,6 +89,13 @@ public class SearchService {
         int ms = result * 500;
         try {
             Thread.sleep((long) (ms));
+        } catch (InterruptedException e) {
+            LOG.info(e.getMessage());
+        }
+    }
+    private void wait3() {
+        try {
+            Thread.sleep((long) (180000));
         } catch (InterruptedException e) {
             LOG.info(e.getMessage());
         }

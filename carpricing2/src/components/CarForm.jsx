@@ -155,15 +155,7 @@ export default class CarForm extends Component {
                         )}
                     </select>
                 </label>
-                <br/>
-                <label>
-                    Nowy:
-                    <input
-                        name="isNew"
-                        type="checkbox"
-                        checked={this.state.isNew}
-                        onChange={this.handleCheckboxChange}/>
-                </label>
+
                 <br/>
                 <label>
                     Bezwypadkowy:
@@ -199,8 +191,17 @@ export default class CarForm extends Component {
                     </select>
                 </label>
                 <br/>
+                <label>
+                    tak-wyszukaj aktualne dane/nie-pobierz z bazy:
+                    <input
+                        name="isNew"
+                        type="checkbox"
+                        checked={this.state.isNew}
+                        onChange={this.handleCheckboxChange}/>
+                </label>
+                <br/>
                 <input type="submit" value="Submit"/>
-                {this.state.loading && <h1>Loading...</h1>}
+                {this.state.loading && <h1>Loading...{this.state.make},{this.state.model},{this.state.version}...</h1>}
                 {this.state.message && <h1>{this.state.message}</h1>}
             </form>
         );
