@@ -64,7 +64,7 @@ export default class Results extends Component {
                                 {chart.r && <span>R: {chart.r} </span>}
                                 {chart.r && <br/>}
                                 {chart.formY &&
-                                <h4>Parametr: {chart.type} / Wartosc: {chart.formX} / Cena: {chart.formY} </h4>}
+                                <h4>Parametr: {chart.type} / Podana wartosc: {chart.formX} / Cena: {chart.formY} zł</h4>}
                             </div>
                         </div>
                     )

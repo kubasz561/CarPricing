@@ -39,15 +39,15 @@ public class SearchService {
         try {
             Document doc = Jsoup.connect(url + 1).get();
             int numberOfPages = getNumberOfPages(doc);
-            wait3();//TODO sprawdzenie ajax call > 3min
-
-            for (int i = 1; i < 2; ++i) {//TODO zabezpieczenie na ilosc stron
+           // wait3();//TODO sprawdzenie ajax call > 3min
+            int max = numberOfPages > 20 ? 20 : numberOfPages;//TODO zabezpieczenie na ilosc stron
+            for (int i = 1; i <= max; ++i) {
                 try {
                     Document pageList = Jsoup.connect(url + i).get();
 
                     List<String> hrefs = getAdvertLinks(pageList);
 
-                    int ONE_ADVERT_ONLY = 1;
+                    int ONE_ADVERT_ONLY = 0;
                     if (!hrefs.isEmpty() && ONE_ADVERT_ONLY == 0) {
                         hrefs.forEach(href -> {
                             sleep();//TODO randomizer

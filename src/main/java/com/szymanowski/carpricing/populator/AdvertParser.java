@@ -19,7 +19,9 @@ public class AdvertParser {
         Elements price = doc.getElementsByClass("offer-price__number");
         Elements items = doc.getElementsByClass("offer-params__item");
         Elements desc = doc.getElementsByClass("offer-description");
-        boolean isNettoPrice = doc.getElementsByClass("offer-price__details").get(0).text().toLowerCase().contains("netto");
+        boolean isNettoPrice = false;
+        if(doc.getElementsByClass("offer-price__details").size() > 0);
+            isNettoPrice = doc.getElementsByClass("offer-price__details").get(0).text().toLowerCase().contains("netto");
         Long advertID = Long.valueOf(doc.getElementsByClass("offer-meta__value").get(1).text());
 
         Map<String, String> keys =  new HashMap();
@@ -44,15 +46,16 @@ public class AdvertParser {
         target.setAdvertId(advertID);
         target.setDate(new Date());
         target.setPrice(calculatePrice(advertPrice, isNettoPrice ));
-
-        target.setYear(Integer.parseInt(keys.get("Rok produkcji").replaceAll("[\\D]", "")));
+        if(keys.containsKey("Rok produkcji"))
+            target.setYear(Integer.parseInt(keys.get("Rok produkcji").replaceAll("[\\D]", "")));
         target.setColor(keys.get("Kolor"));
         if(keys.containsKey("Moc")) {
             target.setPower(Integer.parseInt(keys.get("Moc").replaceAll("[\\D]", "")));
         } else {
             //
         }
-        target.setMileage(Integer.parseInt(keys.get("Przebieg").replaceAll("[\\D]", "")));
+        if(keys.containsKey("Przebieg"))
+            target.setMileage(Integer.parseInt(keys.get("Przebieg").replaceAll("[\\D]", "")));
         target.setNew("Nowy".equals(keys.get("Stan")));
         target.setType(keys.get("Typ"));
         target.setFirstOwner(keys.containsKey("Pierwszy właściciel"));

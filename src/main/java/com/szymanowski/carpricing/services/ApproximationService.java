@@ -309,7 +309,7 @@ public class ApproximationService {
                                             Integer formX, Double formY, SimpleRegression regression) {
         IntegerChartDTO chart = (IntegerChartDTO) createIntegerChartData(type, x, y, regressX, regressY, regression);
         chart.setFormX(formX);
-        chart.setFormY(formY);
+        chart.setFormY(Precision.round(formY,2));
         return chart;
     }
 
@@ -327,7 +327,7 @@ public class ApproximationService {
     private ChartDTO createTextChartData(String type, List<String> x, List<Integer> y, List<String> meanX, List<Double> meanY, String formX, Double formY) {
         TextChartDTO chart = (TextChartDTO) createTextChartData(type,x,y,meanX,meanY);
         chart.setFormX(formX);
-        chart.setFormY(formY);
+        chart.setFormY(Precision.round(formY,2));
         return chart;
     }
 
