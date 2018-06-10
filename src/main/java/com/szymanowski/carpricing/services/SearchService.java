@@ -24,6 +24,8 @@ public class SearchService {
 
     private static final String BASE = "https://www.otomoto.pl/osobowe/";
     private static final String END = "/?page=";
+    private static final int MAX_PAGE_SIZE = 2;
+    private static final boolean ONE_ADVERT_ONLY = false;
 
     @Autowired
     AdvertParser advertParser;
@@ -40,15 +42,14 @@ public class SearchService {
             Document doc = Jsoup.connect(url + 1).get();
             int numberOfPages = getNumberOfPages(doc);
            // wait3();//TODO sprawdzenie ajax call > 3min
-            int max = numberOfPages > 20 ? 20 : numberOfPages;//TODO zabezpieczenie na ilosc stron
+            int max = numberOfPages > MAX_PAGE_SIZE ? MAX_PAGE_SIZE : numberOfPages;//TODO zabezpieczenie na ilosc stron
             for (int i = 1; i <= max; ++i) {
                 try {
                     Document pageList = Jsoup.connect(url + i).get();
 
                     List<String> hrefs = getAdvertLinks(pageList);
 
-                    int ONE_ADVERT_ONLY = 0;
-                    if (!hrefs.isEmpty() && ONE_ADVERT_ONLY == 0) {
+                    if (!hrefs.isEmpty() && !ONE_ADVERT_ONLY) {
                         hrefs.forEach(href -> {
                             sleep();//TODO randomizer
                             try {
@@ -103,7 +104,7 @@ public class SearchService {
 
     private int getNumberOfPages(Document doc) {
         Optional<Elements> elements = Optional.ofNullable(doc.getElementsByClass("page"));
-        if (elements.isPresent()) {
+        if (elements.isPresent() &&  elements.get().size() > 0 ) {
             OptionalInt max = elements.get().stream()
                     .map(Element::text)
                     .map(a -> a.replaceAll("[\\D]", ""))
@@ -112,8 +113,10 @@ public class SearchService {
                     .max();
             if (max.isPresent())
                 return max.getAsInt();
+        } else if (getAdvertLinks(doc).size() > 0  ){
+            return 1;
         }
-        return 1;
+        return 0;
     }
 
     private void populateModelData(CarData form, Adverts advert) {

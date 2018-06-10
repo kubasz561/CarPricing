@@ -20,7 +20,7 @@ public class AdvertParser {
         Elements items = doc.getElementsByClass("offer-params__item");
         Elements desc = doc.getElementsByClass("offer-description");
         boolean isNettoPrice = false;
-        if(doc.getElementsByClass("offer-price__details").size() > 0);
+        if(doc.getElementsByClass("offer-price__details").size() > 0)
             isNettoPrice = doc.getElementsByClass("offer-price__details").get(0).text().toLowerCase().contains("netto");
         Long advertID = Long.valueOf(doc.getElementsByClass("offer-meta__value").get(1).text());
 
@@ -71,6 +71,8 @@ public class AdvertParser {
     }
 
     private Integer calculatePrice(String advertPrice, boolean isNettoPrice) {
+        if(advertPrice!=null)
+            advertPrice = advertPrice.split(",")[0];
         int price = Integer.parseInt(advertPrice.replaceAll("[\\D]", ""));
         return (int) (isNettoPrice ? price * 1.23 : price);
     }
