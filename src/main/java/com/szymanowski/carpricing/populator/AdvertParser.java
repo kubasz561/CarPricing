@@ -22,7 +22,10 @@ public class AdvertParser {
         boolean isNettoPrice = false;
         if(doc.getElementsByClass("offer-price__details").size() > 0)
             isNettoPrice = doc.getElementsByClass("offer-price__details").get(0).text().toLowerCase().contains("netto");
-        Long advertID = Long.valueOf(doc.getElementsByClass("offer-meta__value").get(1).text());
+
+        Long advertID = Long.valueOf(0);
+        if(doc.getElementsByClass("offer-meta__value").size() > 1)
+            advertID = Long.valueOf(doc.getElementsByClass("offer-meta__value").get(1).text());
 
         Map<String, String> keys =  new HashMap();
 

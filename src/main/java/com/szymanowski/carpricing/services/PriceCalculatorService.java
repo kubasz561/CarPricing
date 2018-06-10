@@ -89,6 +89,13 @@ public class PriceCalculatorService {
         );
         return prices.stream().mapToInt(i -> i.intValue()).max().getAsInt();
     }
+    public double calculateFormPriceB(CarData form) {
+        List<Double> prices = new ArrayList<>();
+        parametersService.getAppliedFilters().forEach(filter ->
+                prices.add(filter.apply(form))
+        );
+        return (double) prices.stream().mapToInt(i -> i.intValue()).max().getAsInt();
+    }
 
     public int calculateDiffsMethodB(List<Adverts> adverts) {
 

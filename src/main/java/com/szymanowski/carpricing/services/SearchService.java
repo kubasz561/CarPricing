@@ -24,7 +24,7 @@ public class SearchService {
 
     private static final String BASE = "https://www.otomoto.pl/osobowe/";
     private static final String END = "/?page=";
-    private static final int MAX_PAGE_SIZE = 2;
+    private static final int MAX_PAGE_SIZE = 15;
     private static final boolean ONE_ADVERT_ONLY = false;
 
     @Autowired
@@ -33,7 +33,7 @@ public class SearchService {
     @Autowired
     private AdvertsRepository advertsRepository;
 
-    // "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?page=1";
+    // "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?page=1";  page == 32 adverts
     public List<Adverts> search(CarData form) {
         List<Adverts> adverts = new ArrayList<>();
 
@@ -177,6 +177,7 @@ public class SearchService {
     }
 */
     public List<Adverts> searchInDatabase(CarData form) {
-        return advertsRepository.findByMakeAndModel(form.getMake(), form.getModel());
+        return form.getVersion() == null ? advertsRepository.findByMakeAndModel(form.getMake(), form.getModel())
+                : advertsRepository.findByMakeAndModelAndVersion(form.getMake(),form.getModel(), form.getVersion());
     }
 }

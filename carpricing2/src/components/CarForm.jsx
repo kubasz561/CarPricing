@@ -46,7 +46,8 @@ export default class CarForm extends Component {
     render() {
         return (
             <form onSubmit={this.submit} name="theForm">
-                <label>
+                <div className="grid-container-form">
+                <label className="grid-item">
                     Marka:
                     <select
                         name="make"
@@ -58,8 +59,8 @@ export default class CarForm extends Component {
                         )}
                     </select>
                 </label>
-                <br/>
-                <label>
+
+                <label className="grid-item">
                     Model:
                     <select
                         name="model"
@@ -71,8 +72,7 @@ export default class CarForm extends Component {
                         )}
                     </select>
                 </label>
-                <br/>
-                <label>
+                <label className="grid-item">
                     Wersja:
                     <select
                         name="version"
@@ -84,31 +84,17 @@ export default class CarForm extends Component {
                         )}
                     </select>
                 </label>
-                <br/>
-                <label>
+            <div/>
+                <label className="grid-item">
                     Rok:
+                {/*<SelectYear name="year" value={this.state.year} onChange={this.handleInputChange}/>*/}
+                    <select name="year" value={this.state.year} onChange={this.handleInputChange}>
+                        {this.getYearList().map(year =>
+                            <option value={year}>{year}</option>
+                        )}
+                    </select>
                 </label>
-                {/*<SelectYear
-                        name="year"
-                        value={this.state.year}
-                        onChange={this.handleInputChange}
-                        />*/}
-                <select name="year" value={this.state.year} onChange={this.handleInputChange}>
-                    {this.getYearList().map(year =>
-                        <option value={year}>{year}</option>
-                    )}
-                </select>
-                <br/>
-                <label>
-                    Rodzaj paliwa:
-                </label>
-                <select name="fuel" value={this.state.fuel} onChange={this.handleInputChange}>
-                    <option value="benzyna">Benzyna</option>
-                    <option value="diesel">Diesel</option>
-                    <option value="LPG">Benzyna + LPG</option>
-                </select>
-                <br/>
-                <label>
+                <label className="grid-item">
                     Przebieg:
                     <input
                         name="mileage"
@@ -116,8 +102,18 @@ export default class CarForm extends Component {
                         value={this.state.mileage}
                         onChange={this.handleInputChange}/>
                 </label>
-                <br/>
-                <label>
+            <div/>
+            <div/>
+
+                <label className="grid-item">
+                    Rodzaj paliwa:
+                    <select name="fuel" value={this.state.fuel} onChange={this.handleInputChange}>
+                        <option value="benzyna">Benzyna</option>
+                        <option value="diesel">Diesel</option>
+                        <option value="LPG">Benzyna + LPG</option>
+                    </select>
+                </label>
+                <label className="grid-item">
                     Pojemność:
                     <input
                         name="engineCapacity"
@@ -125,8 +121,7 @@ export default class CarForm extends Component {
                         value={this.state.engineCapacity}
                         onChange={this.handleInputChange}/>
                 </label>
-                <br/>
-                <label>
+                <label className="grid-item">
                     Moc:
                     <input
                         name="power"
@@ -134,17 +129,17 @@ export default class CarForm extends Component {
                         value={this.state.power}
                         onChange={this.handleInputChange}/>
                 </label>
-                <br/>
-                <label>
+            <div/>
+
+                <label className="grid-item">
                     Typ nadwozia:
+                    <select name="type" value={this.state.type} onChange={this.handleInputChange}>
+                        {this.getTypeList().map(year =>
+                            <option value={year}>{year}</option>
+                        )}
+                    </select>
                 </label>
-                <select name="type" value={this.state.type} onChange={this.handleInputChange}>
-                    {this.getTypeList().map(year =>
-                        <option value={year}>{year}</option>
-                    )}
-                </select>
-                <br/>
-                <label>
+                <label className="grid-item">
                     Kolor:
                     <select
                         name="color"
@@ -155,9 +150,10 @@ export default class CarForm extends Component {
                         )}
                     </select>
                 </label>
+            <div/>
+            <div/>
 
-                <br/>
-                <label>
+                <label className="grid-item">
                     Bezwypadkowy:
                     <input
                         name="hadAccident"
@@ -165,8 +161,7 @@ export default class CarForm extends Component {
                         checked={this.state.hadAccident}
                         onChange={this.handleCheckboxChange}/>
                 </label>
-                <br/>
-                <label>
+                <label className="grid-item">
                     Pierwszy właściciel:
                     <input
                         name="isFirstOwner"
@@ -174,33 +169,27 @@ export default class CarForm extends Component {
                         checked={this.state.isFirstOwner}
                         onChange={this.handleCheckboxChange}/>
                 </label>
-                <br/>
-                <textarea
-                    name="description"
-                    value={this.state.description}
-                    onChange={this.handleInputChange}
-                >
-                        ...opis
-                    </textarea>
-                <br/>
-                <label>
+            <div/>
+            <div/>
+
+                <label className="grid-item">
                     Metoda aproksymacji:
                     <select name="method" value={this.state.method} onChange={this.handleInputChange}>
                         <option value="LINEAR_PROGRAMMING">LINEAR_PROGRAMMING</option>
                         <option value="MAX_PRICE">MAX_PRICE</option>
                     </select>
                 </label>
-                <br/>
-                <label>
-                    tak-wyszukaj aktualne dane/nie-pobierz z bazy:
+                <label className="grid-item">
+                    Pobierz dane:
                     <input
                         name="isNew"
                         type="checkbox"
                         checked={this.state.isNew}
                         onChange={this.handleCheckboxChange}/>
                 </label>
-                <br/>
-                <input type="submit" value="Submit"/>
+            </div>
+                <input type="submit" value="Wyceń pojazd"/>
+
                 {this.state.loading && <h1>Loading...{this.state.make},{this.state.model},{this.state.version}...</h1>}
                 {this.state.message && <h1>{this.state.message}</h1>}
             </form>

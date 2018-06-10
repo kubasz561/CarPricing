@@ -20,7 +20,7 @@ export default class Results extends Component {
                     <h4>Średnie odchylenie od ceny: {this.props.response.averageDiff} zł </h4>
                     <h4>Mediana odchylenia od ceny: {this.props.response.median} zł </h4>
                     <h4>Obliczone na podstawie {this.props.response.lpResultDTO.filteredAdvertsCount} ogłoszeń </h4>
-                    <h4>Parametry wzięte pod uwagę: (ilość: {this.props.response.filtersInfo.split(",").length-1})</h4>
+                    {this.props.response.filtersInfo && <h4>Parametry wzięte pod uwagę: (ilość: {this.props.response.filtersInfo.split(",").length-1})</h4>}
                     {this.props.response.filtersInfo && <ParamsTable filters={this.props.response.filtersInfo} />}
                 </div>
                 }
@@ -30,7 +30,7 @@ export default class Results extends Component {
 
                 {
                     this.props.response && this.props.response.charts && this.props.response.charts.map(chart =>
-                        <div className="grid-item">
+                        <div className="grid-results-item">
                             <div>
                                 <Plot
                                     data={[

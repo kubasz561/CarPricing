@@ -59,13 +59,13 @@ public class RestApiController {
                 averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams());
                 median = priceCalculatorService.calculateMedian(adverts, optimizationResult.getwParams());
             } else {
-                price = 0.0;
+                price =  priceCalculatorService.calculateFormPriceB(form);
                 averageDiff = priceCalculatorService.calculateDiffsMethodB(adverts);
                 median = priceCalculatorService.calculateMedianB(adverts);
             }
 
             String filtersInfo = parametersService.getAppliedFiltersNamesAndValues(optimizationResult.getwParams());
-            return createSearchRespone(chartDTOS, optimizationResult, price, averageDiff, median, filtersInfo);
+            return createSearchRespone(chartDTOS, optimizationResult, price, averageDiff, median, filtersInfo, form.getMethod());
         } else {
             return createSearchRespone("Nie znaleziono żadnych ogłoszeń");
         }
@@ -88,14 +88,15 @@ public class RestApiController {
     }
 
 
-    private RestResponse createSearchRespone(List<ChartDTO> chartDTOS, LPResultDTO optimizationResult, Double price, int averageDiff, int median, String filtersInfo) {
+    private RestResponse createSearchRespone(List<ChartDTO> chartDTOS, LPResultDTO optimizationResult, Double price, int averageDiff, int median, String filtersInfo, ApproximationMethod method) {
         RestResponse restResponse = new RestResponse();
         restResponse.setAverageDiff(averageDiff);
         restResponse.setMedian(median);
         restResponse.setFormPrice(price != null ? price.intValue(): 0);
         restResponse.setLpResultDTO(optimizationResult);
         restResponse.setCharts(chartDTOS);
-        restResponse.setFiltersInfo(filtersInfo);
+        if(ApproximationMethod.LINEAR_PROGRAMMING.equals(method))
+            restResponse.setFiltersInfo(filtersInfo);
         return restResponse;
     }
     private RestResponse createSearchRespone(String message) {
