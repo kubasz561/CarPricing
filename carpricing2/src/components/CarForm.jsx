@@ -37,6 +37,7 @@ export default class CarForm extends Component {
         this.getVersion = this.getVersion.bind(this);
         this.getYearList = this.getYearList.bind(this);
         this.getColorList = this.getColorList.bind(this);
+        this.validateForm = this.validateForm.bind(this);
     }
 
     componentDidMount(){
@@ -54,6 +55,7 @@ export default class CarForm extends Component {
                         type="text"
                         value={this.state.make}
                         onChange={this.handleMakeInputChange}>
+                        <option value="" selected disabled hidden>Wybierz</option>
                         {this.state.makeList.map(make =>
                             <option value={make}>{make}</option>
                         )}
@@ -67,6 +69,7 @@ export default class CarForm extends Component {
                         type="text"
                         value={this.state.model}
                         onChange={this.handleModelInputChange}>
+                        <option value="" selected disabled hidden>Wybierz</option>
                         {this.state.modelList.map(model =>
                             <option value={model}>{model}</option>
                         )}
@@ -79,6 +82,7 @@ export default class CarForm extends Component {
                         type="text"
                         value={this.state.version}
                         onChange={this.handleInputChange}>
+                        <option value="" selected disabled hidden>Wybierz</option>
                         {this.state.versionList.map(version =>
                             <option value={version}>{version}</option>
                         )}
@@ -241,22 +245,27 @@ export default class CarForm extends Component {
         return ["Sedan","Kombi","Kompakt","SUV","Coupe","Auta miejskie","Auta małe","Minivan"];
     }
     submit(e) {
-        this.setState({loading:true,message:null});
-        e.preventDefault();
-        let _this2 = this;
-        $.ajax({
-            url: "/api/search",
-            data: this.state,
-            method: 'POST',
-            success: function (result) {
-                _this2.handleResponse(result);
-                _this2.setState({loading:false});
-            },
-            error: function (result) {
-                _this2.setState({loading:false, message:"500 Internal server error"});
-            }
-        });
+        if(this.validateForm()) {
+            this.setState({loading: true, message: null});
+            e.preventDefault();
+            let _this2 = this;
+            $.ajax({
+                url: "/api/search",
+                data: this.prepareSubmitData(this.state),
+                method: 'POST',
+                success: function (result) {
+                    _this2.handleResponse(result);
+                    _this2.setState({loading: false});
+                },
+                error: function (result) {
+                    _this2.setState({loading: false, message: "500 Internal server error"});
+                }
+            });
+        } else {
+            e.preventDefault();
+        }
     }
+
     getMake() {
         let _this2 = this;
         $.ajax({
@@ -290,5 +299,40 @@ export default class CarForm extends Component {
                 _this2.setState({versionList:result})
             }
         });
+    }
+
+    validateForm() {
+        let result = true;
+        if (!this.state.model || !this.state.make) {
+            result = false;
+            this.setState({loading: false, message: "Marka i model są wymagane do wyceny."});
+        }
+        if (!(this.isEmptyOrNumber(this.state.engineCapacity) && this.isEmptyOrNumber(this.state.mileage) && this.isEmptyOrNumber(this.state.power))) {
+            result = false;
+            this.setState({loading: false, message: "Pola przebieg, pojemność i moc mogą zawierać jedynie cyfry"});
+        }
+        return result;
+    }
+    isEmptyOrNumber(str) {
+        return !str || /^\d+$/.test(str);
+    }
+    prepareSubmitData(state){
+        return {
+            make: state.make,
+            model: state.model,
+            version: state.version,
+            year: state.year,
+            fuel: state.fuel,
+            mileage: state.mileage,
+            engineCapacity: state.engineCapacity,
+            power: state.power,
+            color: state.color,
+            type: state.type,
+            isNew: state.isNew,
+            hadAccident: state.hadAccident,
+            isFirstOwner: state.isFirstOwner,
+            description: state.description,
+            method: state.method
+        };
     }
 }
