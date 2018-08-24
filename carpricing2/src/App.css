@@ -28,7 +28,8 @@
   to { transform: rotate(360deg); }
 }
 body {
-  background: url("porsche-banner.jpg") repeat;
+  background-color: #f2f2f2;
+  padding-bottom: 60px;
 }
 .banner {
   position: static;

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import logo from './logo.svg';
 import banner from './porsche-banner.jpg';
 import './App.css';
 import Results from './components/Results';
