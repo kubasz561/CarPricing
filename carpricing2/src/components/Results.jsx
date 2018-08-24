@@ -14,7 +14,7 @@ export default class Results extends Component {
                 </div>
                 }
                 {
-                this.props.response &&  !this.props.response.message &&
+                this.props.response &&  !this.props.response.message && this.props.response.lpResultDTO &&
                 <div>
                     <h2>Proponowana Cena: {this.props.response.formPrice} zł </h2>
                     <h4>Średnie odchylenie od ceny: {this.props.response.averageDiff} zł </h4>

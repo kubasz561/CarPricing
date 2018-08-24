@@ -55,7 +55,7 @@ export default class CarForm extends Component {
                         type="text"
                         value={this.state.make}
                         onChange={this.handleMakeInputChange}>
-                        <option value="" selected disabled hidden>Wybierz</option>
+                        <option value=""  disabled hidden>Wybierz</option>
                         {this.state.makeList.map(make =>
                             <option value={make}>{make}</option>
                         )}
@@ -69,7 +69,7 @@ export default class CarForm extends Component {
                         type="text"
                         value={this.state.model}
                         onChange={this.handleModelInputChange}>
-                        <option value="" selected disabled hidden>Wybierz</option>
+                        <option value=""  disabled hidden>Wybierz</option>
                         {this.state.modelList.map(model =>
                             <option value={model}>{model}</option>
                         )}
@@ -82,7 +82,7 @@ export default class CarForm extends Component {
                         type="text"
                         value={this.state.version}
                         onChange={this.handleInputChange}>
-                        <option value="" selected disabled hidden>Wybierz</option>
+                        <option value=""  disabled hidden>Wybierz</option>
                         {this.state.versionList.map(version =>
                             <option value={version}>{version}</option>
                         )}
@@ -247,6 +247,7 @@ export default class CarForm extends Component {
     submit(e) {
         if(this.validateForm()) {
             this.setState({loading: true, message: null});
+            this.handleResponse(null);
             e.preventDefault();
             let _this2 = this;
             $.ajax({
@@ -285,6 +286,8 @@ export default class CarForm extends Component {
             method: 'GET',
             success: function (result) {
                 _this2.setState({modelList:result})
+                _this2.setState({model:""})
+                _this2.setState({version:""})
             }
         });
     }
@@ -297,6 +300,7 @@ export default class CarForm extends Component {
             method: 'GET',
             success: function (result) {
                 _this2.setState({versionList:result})
+                _this2.setState({version:""})
             }
         });
     }
