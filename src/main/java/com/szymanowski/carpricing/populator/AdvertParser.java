@@ -47,7 +47,7 @@ public class AdvertParser {
 
         target.setName(advertTitle);
         target.setAdvertId(advertID);
-        target.setDate(new Date());
+        target.setSaveDate(new Date());
         target.setPrice(calculatePrice(advertPrice, isNettoPrice ));
         if(keys.containsKey("Rok produkcji"))
             target.setYear(Integer.parseInt(keys.get("Rok produkcji").replaceAll("[\\D]", "")));

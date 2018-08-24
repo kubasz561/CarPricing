@@ -3,6 +3,8 @@ package com.szymanowski.carpricing;
 import com.szymanowski.carpricing.dto.CarData;
 import com.szymanowski.carpricing.repository.Adverts;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 
 public class Utils {
@@ -23,4 +25,9 @@ public class Utils {
         return o != null ? form.getYear() + "-" + o.toString() : form.getYear() + " -empty";
     }
 
+    public static Date getYearAgoDate() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, -1);
+        return cal.getTime();
+    }
 }

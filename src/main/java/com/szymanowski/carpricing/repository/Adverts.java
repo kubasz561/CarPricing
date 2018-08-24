@@ -10,7 +10,8 @@ public class Adverts {
     private Integer id;
 
     private Long advertId;
-    private Date date;
+    @Temporal(TemporalType.DATE)
+    private Date saveDate;
 
     private String name;
     private Integer price;
@@ -174,12 +175,12 @@ public class Adverts {
         this.description = description;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getSaveDate() {
+        return saveDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setSaveDate(Date saveDate) {
+        this.saveDate = saveDate;
     }
 
     public String getVersion() {

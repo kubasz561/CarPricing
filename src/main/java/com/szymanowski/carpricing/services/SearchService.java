@@ -1,5 +1,6 @@
 package com.szymanowski.carpricing.services;
 
+import com.szymanowski.carpricing.Utils;
 import com.szymanowski.carpricing.dto.CarData;
 import com.szymanowski.carpricing.populator.AdvertParser;
 import com.szymanowski.carpricing.repository.Adverts;
@@ -24,7 +25,7 @@ public class SearchService {
 
     private static final String BASE = "https://www.otomoto.pl/osobowe/";
     private static final String END = "/?page=";
-    private static final int MAX_PAGE_SIZE = 15;
+    private static final int MAX_PAGE_SIZE = 1;
     private static final boolean ONE_ADVERT_ONLY = false;
 
     @Autowired
@@ -33,10 +34,15 @@ public class SearchService {
     @Autowired
     private AdvertsRepository advertsRepository;
 
+    public List<Adverts> searchInDatabase(CarData form) {
+        return form.getVersion() == null ? advertsRepository.findByMakeAndModelAndSaveDateAfter(form.getMake(), form.getModel(), Utils.getYearAgoDate())
+                : advertsRepository.findByMakeAndModelAndVersionAndSaveDateAfter(form.getMake(),form.getModel(), form.getVersion(), Utils.getYearAgoDate());
+    }
+
     // "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?page=1";  page == 32 adverts
     public List<Adverts> search(CarData form) {
         List<Adverts> adverts = new ArrayList<>();
-
+        List<Adverts> databaseAdverts = searchInDatabase(form);
         String url = getCarUrl(form);
         try {
             Document doc = Jsoup.connect(url + 1).get();
@@ -57,8 +63,10 @@ public class SearchService {
                                 Adverts advert = new Adverts();
                                 populateModelData(form, advert);
                                 advertParser.populate(advertDoc, advert);
-                                adverts.add(advert);
-                                advertsRepository.save(advert);
+                                if (databaseAdverts.stream().noneMatch(databaseAdvert -> databaseAdvert.getAdvertId().equals(advert.getAdvertId()))) {
+                                    adverts.add(advert);
+                                    advertsRepository.save(advert);
+                                }
                             } catch (IOException e) {
                                 LOG.info(e.getMessage());
                             }
@@ -79,6 +87,7 @@ public class SearchService {
         } catch (IOException e) {
             LOG.info(e.getMessage());
         }
+        adverts.addAll(databaseAdverts);
         return adverts;
     }
 
@@ -140,44 +149,4 @@ public class SearchService {
         return links.stream().map(a -> a.attributes()).map(a -> a.get("href")).collect(Collectors.toList());
     }
 
-   /* //https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&page=3
-    public List<Adverts> searchWithoutOpeningAdverts(CarData form) {
-        String url = "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?search%5Bbrand_program_id%5D%5B0%5D=&search%5Bcountry%5D=&" + form.getMake();
-
-        try {
-            Document doc = Jsoup.connect(url).get();
-
-            Elements links = doc.getElementsByClass("offer-item__price");
-
-            List<Adverts> adverts = new ArrayList<>();
-
-            for (int i = 0; i < links.size(); i++) {
-                List<String> params = doc.getElementsByClass("offer-item__params").get(i).childNodes().stream().filter(a -> a instanceof Element).map(a -> (Element) a).map(a -> a.text()).collect(Collectors.toList());
-
-                if (links.get(i) != null && params.get(0) != null && params.get(1) != null) {
-                    Adverts advert = new Adverts();
-                    advert.setMake("Volkswagen");
-                    advert.setModel("Golf V");
-                    advert.setPrice(Integer.parseInt(links.get(i).text().replaceAll("[\\D]", "")));
-                    advert.setYear(Integer.parseInt(params.get(0)));
-                    advert.setMileage(Integer.parseInt(params.get(1).replaceAll("[\\D]", "")));
-                    *//*advert.setEngineCapacity(Integer.parseInt(params.get(2).substring(0, params.get(3).length() - 2).replaceAll("[\\D]", "")));
-                    advert.setFuel(params.get(3));*//*
-                    adverts.add(advert);
-                    advertsRepository.save(advert);
-
-                }
-            }
-
-            return adverts;
-        } catch (IOException e) {
-            LOG.info(e.getMessage());
-        }
-        return null;
-    }
-*/
-    public List<Adverts> searchInDatabase(CarData form) {
-        return form.getVersion() == null ? advertsRepository.findByMakeAndModel(form.getMake(), form.getModel())
-                : advertsRepository.findByMakeAndModelAndVersion(form.getMake(),form.getModel(), form.getVersion());
-    }
 }
