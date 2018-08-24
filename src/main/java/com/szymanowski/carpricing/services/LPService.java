@@ -25,7 +25,7 @@ public class LPService {
         List<Adverts> advertFiltered = amplDataDTO.getAdvertFiltered();
 
         try {
-            ampl.read("C:/Users/Admin/Desktop/CarPricing/ampl/model.mod");
+            ampl.read("ampl/models/model.mod");
             ampl.eval("data; param N := " + parametersInfo.getAppliedFilters().size() + ";    param M := " + advertFiltered.size() + ";  ");
             ampl.eval(amplDataDTO.getTotalPriceStringBuilder().toString());
             ampl.eval(amplDataDTO.getPartPriceStringBuilder().toString());
