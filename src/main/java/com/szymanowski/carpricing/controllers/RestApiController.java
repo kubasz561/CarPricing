@@ -18,13 +18,10 @@ import java.util.logging.Logger;
 @RequestMapping("/api")
 @RestController
 public class RestApiController {
-    private static final Logger LOG = Logger.getLogger("RestApiController");
     @Autowired
     SearchService searchService;
     @Autowired
     ApproximationService approximationService;
-    @Autowired
-    DescriptionAnalyzerService descriptionAnalyzerService;
 
     @Autowired
     PriceCalculatorService priceCalculatorService;
@@ -43,7 +40,6 @@ public class RestApiController {
         List<Adverts> adverts = form.getIsNew() ? searchService.search(form) : searchService.searchInDatabase(form);
 
         if(!CollectionUtils.isEmpty(adverts)) {
-            // descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
             ApproximationData approximationData = approximationService.approximate(adverts, form);
             ParametersInfo parametersInfo = approximationData.getParametersInfo();
             parametersInfo.calculateFilters(form);

@@ -11,25 +11,8 @@ public class IntegerChartDTO extends ChartDTO {
         this.r = r;
     }
 
-    public double getR2() {
-        return r2;
-    }
-
-    public void setR2(double r2) {
-        this.r2 = r2;
-    }
-
-    public double getSignificance() {
-        return significance;
-    }
-
-    public void setSignificance(double significance) {
-        this.significance = significance;
-    }
-
     private double r;
-    private double r2;
-    private double significance;
+
     private List<Integer> advertX;
 
     public Integer getFormX() {

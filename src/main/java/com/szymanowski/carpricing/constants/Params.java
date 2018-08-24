@@ -17,7 +17,7 @@ public enum Params {
         return value;
     }
 
-    private Params(String value){
+    Params(String value){
         this.value = value;
     }
 }

@@ -14,7 +14,6 @@ public class MakeModel {
     private String make;
     private String model;
     private String version;
-    private String engineCode;
 
     public Integer getId() {
         return id;
@@ -48,12 +47,5 @@ public class MakeModel {
         this.version = version;
     }
 
-    public String getEngineCode() {
-        return engineCode;
-    }
-
-    public void setEngineCode(String engineCode) {
-        this.engineCode = engineCode;
-    }
 }
 

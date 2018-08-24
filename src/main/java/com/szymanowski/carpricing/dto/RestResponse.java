@@ -4,6 +4,14 @@ import java.util.List;
 
 public class RestResponse {
 
+    private List<ChartDTO> charts;
+    private LPResultDTO lpResultDTO;
+    private int formPrice;
+    private int averageDiff;
+    private int median;
+    private String filtersInfo;
+    private String message;
+
     public LPResultDTO getLpResultDTO() {
         return lpResultDTO;
     }
@@ -36,11 +44,6 @@ public class RestResponse {
         this.charts = charts;
     }
 
-    private List<ChartDTO> charts;
-    private LPResultDTO lpResultDTO;
-    private int formPrice;
-    private int averageDiff;
-
     public int getMedian() {
         return median;
     }
@@ -48,8 +51,6 @@ public class RestResponse {
     public void setMedian(int median) {
         this.median = median;
     }
-
-    private int median;
 
     public String getFiltersInfo() {
         return filtersInfo;
@@ -59,8 +60,6 @@ public class RestResponse {
         this.filtersInfo = filtersInfo;
     }
 
-    private String filtersInfo;
-
     public String getMessage() {
         return message;
     }
@@ -68,8 +67,5 @@ public class RestResponse {
     public void setMessage(String message) {
         this.message = message;
     }
-
-    private String message;
-
 
 }

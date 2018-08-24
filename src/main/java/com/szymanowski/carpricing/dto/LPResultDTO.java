@@ -3,16 +3,16 @@ package com.szymanowski.carpricing.dto;
 
 public class LPResultDTO {
     private double totalDiff;
+    private int filteredAdvertsCount;
+    private double[] wParams;
 
-    public int getFilteredAdvertsCount() {
+    public int getFilteredAdvertsCount() { //front
         return filteredAdvertsCount;
     }
 
     public void setFilteredAdvertsCount(int filteredAdvertsCount) {
         this.filteredAdvertsCount = filteredAdvertsCount;
     }
-
-    private int filteredAdvertsCount;
 
     public double getTotalDiff() {
         return totalDiff;
@@ -29,7 +29,5 @@ public class LPResultDTO {
     public void setwParams(double[] wParams) {
         this.wParams = wParams;
     }
-
-    private double[] wParams;
 
 }

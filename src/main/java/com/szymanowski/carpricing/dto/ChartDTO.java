@@ -3,10 +3,14 @@ package com.szymanowski.carpricing.dto;
 
 import java.util.List;
 
-public class ChartDTO{
+public class ChartDTO {
 
     private String type;
     private String mainChartMode;
+    private String approxChartMode;
+    private List<Integer> advertY;
+    private List<Double> regressY;
+    private Double formY;
 
     public String getMainChartMode() {
         return mainChartMode;
@@ -23,10 +27,6 @@ public class ChartDTO{
     public void setApproxChartMode(String approxChartMode) {
         this.approxChartMode = approxChartMode;
     }
-
-    private String approxChartMode;
-
-    private  List<Integer> advertY;
 
     public String getType() {
         return type;
@@ -53,8 +53,6 @@ public class ChartDTO{
         this.regressY = regressY;
     }
 
-    private  List<Double> regressY;
-
     public Double getFormY() {
         return formY;
     }
@@ -62,8 +60,5 @@ public class ChartDTO{
     public void setFormY(Double formY) {
         this.formY = formY;
     }
-
-    private Double formY;
-
 
 }

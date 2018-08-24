@@ -91,7 +91,6 @@ export default class CarForm extends Component {
             <div/>
                 <label className="grid-item">
                     Rok:
-                {/*<SelectYear name="year" value={this.state.year} onChange={this.handleInputChange}/>*/}
                     <select name="year" value={this.state.year} onChange={this.handleInputChange}>
                         {this.getYearList().map(year =>
                             <option value={year}>{year}</option>
@@ -233,7 +232,7 @@ export default class CarForm extends Component {
     }
     getYearList (){
         var years = [];
-        for (var i = 2018; i >= 1990; i--) {
+        for (var i = 2018; i >= 1970; i--) {
             years.push(i);
         }
         return years;

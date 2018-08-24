@@ -2,7 +2,6 @@ package com.szymanowski.carpricing.services;
 
 import com.szymanowski.carpricing.dto.CarData;
 import com.szymanowski.carpricing.repository.Adverts;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

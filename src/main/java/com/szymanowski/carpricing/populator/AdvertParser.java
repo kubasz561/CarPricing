@@ -54,8 +54,6 @@ public class AdvertParser {
         target.setColor(keys.get("Kolor"));
         if(keys.containsKey("Moc")) {
             target.setPower(Integer.parseInt(keys.get("Moc").replaceAll("[\\D]", "")));
-        } else {
-            //
         }
         if(keys.containsKey("Przebieg"))
             target.setMileage(Integer.parseInt(keys.get("Przebieg").replaceAll("[\\D]", "")));
@@ -66,11 +64,8 @@ public class AdvertParser {
         target.setFuel(keys.get("Rodzaj paliwa"));
         if(keys.containsKey("Pojemność skokowa")) {
             target.setEngineCapacity(Integer.parseInt(keys.get("Pojemność skokowa").substring(0,5).replaceAll("[\\D]", "")));
-        } else {
-            //
         }
         target.setDescription(description.length() > 4001 ? description.substring(0,4000) : description);
-        //target.setDescription( description);
     }
 
     private Integer calculatePrice(String advertPrice, boolean isNettoPrice) {

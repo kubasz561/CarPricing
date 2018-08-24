@@ -5,7 +5,6 @@ import com.ampl.*;
 import com.szymanowski.carpricing.dto.LPResultDTO;
 import com.szymanowski.carpricing.repository.Adverts;
 import org.apache.commons.math3.util.Precision;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;

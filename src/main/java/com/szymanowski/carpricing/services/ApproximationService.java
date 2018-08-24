@@ -7,7 +7,6 @@ import com.szymanowski.carpricing.dto.*;
 import com.szymanowski.carpricing.repository.Adverts;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 import org.apache.commons.math3.util.Precision;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -35,18 +34,6 @@ public class ApproximationService {
         charts.add(accidentMean(adverts,  Utils.appendYearToParam(form, form.getHadAccident()), parametersInfo));
         charts.add(firstOwnerMean(adverts, Utils.appendYearToParam(form, form.getIsFirstOwner()), parametersInfo));
 
-
-        //charts.add(colorYearMean(adverts, Utils.appendYearToParam(form, form.getColor())));
-        //charts.add(typeYearMean(adverts,Utils.appendYearToParam(form, form.getType())));
-/*
-        charts.add(fuelMean(adverts));
-        charts.add(powerMean(adverts,form.getPower().toString()+" KM"));
-        charts.add(capacityMean(adverts));
-        charts.add(yearmean(adverts, form.getYear()));
-        charts.add(powerRegression(adverts, form.getPower()));
-        charts.add(mileageNoAccidentRegression(adverts, form.getMileage()));
-        charts.add(yearMileageRegression(adverts));
-*/
         return new ApproximationData(charts,parametersInfo);
     }
 
@@ -112,27 +99,6 @@ public class ApproximationService {
         parametersInfo.addMeanToMap(Params.COLOR, means);
         return createTextChartData(Params.COLOR.getValue(),advertX, advertY, regressX, regressY, formX, formY);
     }
-/*    private ChartDTO colorYearMean(List<Adverts> adverts, String formX){
-        List<String> advertX = new ArrayList<>();
-        List<Integer> advertY = new ArrayList<>();
-        List<String> regressX = new ArrayList<>();
-        List<Double> regressY = new ArrayList<>();
-        MultiValueMap<String, Integer> colorPriceMap = new LinkedMultiValueMap<>();
-        Map<String, Double> means = new HashMap<>();
-
-        adverts.stream()
-                .filter(advert -> advert.getColor() != null)
-                .sorted(Comparator.comparing(Adverts::getYear).thenComparing(Adverts::getColor))
-                .forEach(advert -> {
-                    colorPriceMap.add(Utils.appendYearToParam(advert, advert.getColor()), advert.getPrice());
-                    advertX.add(Utils.appendYearToParam(advert, advert.getColor()));
-                    advertY.add(advert.getPrice());
-                });
-
-        Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        approximationStorage.addMeanToMap(Params.COLOR_YEAR, means);
-        return createTextChartData(Params.COLOR_YEAR.getValue(),advertX, advertY, regressX, regressY, formX, formY);
-    }*/
 
     private ChartDTO accidentMean(List<Adverts> adverts, String formX, ParametersInfo parametersInfo){
         List<String> advertX = new ArrayList<>();
@@ -202,34 +168,6 @@ public class ApproximationService {
 
         return createTextChartData(Params.TYPE.getValue(),advertX, advertY, regressX, regressY, formX, formY);
     }
-
-/*
-    private ChartDTO typeYearMean(List<Adverts> adverts, String formX){
-        List<String> advertX = new ArrayList<>();
-        List<Integer> advertY = new ArrayList<>();
-        List<String> regressX = new ArrayList<>();
-        List<Double> regressY = new ArrayList<>();
-        MultiValueMap<String, Integer> colorPriceMap = new LinkedMultiValueMap<>();
-        Map<String, Double> means = new HashMap<>();
-
-        adverts.stream()
-                .filter(advert -> advert.getType() != null)
-                .filter(advert -> advert.getYear() != null)
-                .sorted(Comparator.comparing(Adverts::getYear).thenComparing(Adverts::getType))
-                .forEach(advert -> {
-                    colorPriceMap.add(Utils.appendYearToParam(advert, advert.getType()), advert.getPrice());
-                    advertX.add(Utils.appendYearToParam(advert, advert.getType()));
-                    advertY.add(advert.getPrice());
-                });
-
-        Double formY = getMeanPoints(regressX, regressY, colorPriceMap, means, formX);
-        approximationStorage.addMeanToMap(Params.TYPE_YEAR, means);
-        return createTextChartData(Params.TYPE_YEAR.getValue(),advertX, advertY, regressX, regressY, formX, formY);
-    }
-*/
-
-
-
 
     private ChartDTO engineMean(List<Adverts> adverts, String formX, ParametersInfo parametersInfo){
         List<String> advertX = new ArrayList<>();
@@ -303,8 +241,6 @@ public class ApproximationService {
     private ChartDTO createIntegerChartData(String type, List<Integer> x, List<Integer> y, List<Integer> regressX, List<Double> regressY, SimpleRegression regression) {
         IntegerChartDTO chart = (IntegerChartDTO) createIntegerChartData(type, x, y, regressX, regressY);
         chart.setR(Precision.round(regression.getR(), 2));
-        chart.setR2(Precision.round(regression.getRSquare(),2));
-        chart.setSignificance(Precision.round(regression.getSignificance(),2));
         return chart;
     }
     private ChartDTO createIntegerChartData(String type, List<Integer> x, List<Integer> y, List<Integer> regressX, List<Double> regressY,

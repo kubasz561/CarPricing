@@ -5,7 +5,6 @@ import com.szymanowski.carpricing.repository.Adverts;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Optional;
 
 public class Utils {
 

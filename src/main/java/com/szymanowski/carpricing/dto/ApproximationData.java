@@ -12,6 +12,7 @@ public class ApproximationData {
         this.charts = charts;
         this.parametersInfo = parametersInfo;
     }
+
     public List<ChartDTO> getCharts() {
         return charts;
     }

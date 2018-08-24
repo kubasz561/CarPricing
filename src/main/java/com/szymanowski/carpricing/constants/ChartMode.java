@@ -10,7 +10,7 @@ public enum ChartMode {
         return value;
     }
 
-    private ChartMode(String value){
+    ChartMode(String value){
         this.value = value;
     }
 

@@ -10,7 +10,7 @@ public enum ApproximationMethod {
         return value;
     }
 
-    private ApproximationMethod(String value){
+    ApproximationMethod(String value){
         this.value = value;
     }
 }

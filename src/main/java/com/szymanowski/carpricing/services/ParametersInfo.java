@@ -16,7 +16,6 @@ import java.util.function.Predicate;
 
 
 public class ParametersInfo {
-    //TODO refactor to nie moze byc tak przechowywane
     SimpleRegression mileageRegression;
     SimpleRegression yearRegression;
     Map<Params, Map<String, Double>> means = new HashMap<>();
@@ -136,17 +135,6 @@ public class ParametersInfo {
         isAccidentYear = checkAccidentYear().test(form);
     }
 
-    public Predicate<CarData> applyFilters() { //bez sensu
-        Predicate<CarData> filters = checkYear() ;
-
-        filters = isMileage ? filters.and(checkMileage()) : filters;
-        filters = isEngine ? filters.and(checkEngine()) : filters;
-        filters = isColor ? filters.and(checkColor()) : filters;
-        filters = isType ? filters.and(checkType()) : filters;
-        filters = isFirstOwnerYear ? filters.and(checkFirstOwnerYear()) : filters;
-        filters = isAccidentYear ? filters.and(checkAccidentYear()) : filters;
-        return filters;
-    }
     public Predicate<Adverts> applyAdvertFilters() {
         Predicate<Adverts> filters = checkYearA() ;
 
@@ -206,16 +194,4 @@ public class ParametersInfo {
         }
         return filtersNamesAndValues.toString();
     }
-    //niepotrzebne
-    public void reset(){
-        isYear = false;
-        isMileage = false;
-        isEngine = false;
-        isColor = false;
-        isType = false;
-        isFirstOwnerYear =false;
-        isAccidentYear = false;
-    }
-
-
 }
