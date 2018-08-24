@@ -11,51 +11,49 @@ import java.util.List;
 @Service
 public class PriceCalculatorService {
 
-    @Autowired
-    ParametersService parametersService;
 
-    public Double calculatePrice(CarData form, double[] w) {
-        if (w.length != parametersService.getAppliedFilters().size())
+    public Double calculatePrice(CarData form, double[] w, ParametersInfo parametersInfo) {
+        if (w.length != parametersInfo.getAppliedFilters().size())
             return null;
 
         double sum = 0;
         for (int i = 0; i < w.length; ++i) {
-            sum += parametersService.getAppliedFilters().get(i).apply(form) * w[i];
+            sum += parametersInfo.getAppliedFilters().get(i).apply(form) * w[i];
         }
         return sum;
     }
 
-    public Double calculateAdvertPrice(Adverts form, double[] w) {
-        if (w.length != parametersService.getAppliedFilters().size())
+    public Double calculateAdvertPrice(Adverts form, double[] w, ParametersInfo parametersInfo) {
+        if (w.length != parametersInfo.getAppliedFilters().size())
             return null;
 
         double sum = 0;
         for (int i = 0; i < w.length; ++i) {
-            sum += parametersService.getAppliedAdvertsFilters().get(i).apply(form) * w[i];
+            sum += parametersInfo.getAppliedAdvertsFilters().get(i).apply(form) * w[i];
         }
         return sum;
     }
 
-    public int calculateDiffs(List<Adverts> adverts, double[] w) {
+    public int calculateDiffs(List<Adverts> adverts, double[] w, ParametersInfo parametersInfo) {
 
         List<Double> diffs = new ArrayList<>();
 
         adverts.stream()
-                .filter(p -> parametersService.applyAdvertFilters().test(p))
+                .filter(p -> parametersInfo.applyAdvertFilters().test(p))
                 .forEach(advert ->
-                        diffs.add(advert.getPrice() - calculateAdvertPrice(advert, w))
+                        diffs.add(advert.getPrice() - calculateAdvertPrice(advert, w, parametersInfo))
                 );
 
         return (int) diffs.stream().mapToInt(i -> Math.abs(i.intValue())).average().getAsDouble();
     }
 
-    public int calculateMedian(List<Adverts> adverts, double[] w) {
+    public int calculateMedian(List<Adverts> adverts, double[] w, ParametersInfo parametersInfo) {
         List<Double> diffs = new ArrayList<>();
 
         adverts.stream()
-                .filter(p -> parametersService.applyAdvertFilters().test(p))
+                .filter(p -> parametersInfo.applyAdvertFilters().test(p))
                 .forEach(advert ->
-                        diffs.add(advert.getPrice() - calculateAdvertPrice(advert, w))
+                        diffs.add(advert.getPrice() - calculateAdvertPrice(advert, w, parametersInfo))
                 );
 
         int[] sortedDiffs = diffs.stream().mapToInt(i -> Math.abs(i.intValue())).sorted().toArray();
@@ -66,13 +64,13 @@ public class PriceCalculatorService {
             return sortedDiffs[medium];
     }
 
-    public int calculateMedianB(List<Adverts> adverts) {
+    public int calculateMedianB(List<Adverts> adverts, ParametersInfo parametersInfo) {
         List<Integer> diffs = new ArrayList<>();
 
         adverts.stream()
-                .filter(p -> parametersService.applyAdvertFilters().test(p))
+                .filter(p -> parametersInfo.applyAdvertFilters().test(p))
                 .forEach(advert ->
-                        diffs.add(advert.getPrice() - calculateAdvertPriceB(advert))
+                        diffs.add(advert.getPrice() - calculateAdvertPriceB(advert, parametersInfo))
                 );
         int[] sortedDiffs = diffs.stream().mapToInt(i -> Math.abs(i.intValue())).sorted().toArray();
         int medium = sortedDiffs.length / 2;
@@ -82,29 +80,29 @@ public class PriceCalculatorService {
             return sortedDiffs[medium];
     }
 
-    public int calculateAdvertPriceB(Adverts form) {
+    public int calculateAdvertPriceB(Adverts form, ParametersInfo parametersInfo) {
         List<Double> prices = new ArrayList<>();
-        parametersService.getAppliedAdvertsFilters().forEach(filter ->
+        parametersInfo.getAppliedAdvertsFilters().forEach(filter ->
                 prices.add(filter.apply(form))
         );
         return prices.stream().mapToInt(i -> i.intValue()).max().getAsInt();
     }
-    public double calculateFormPriceB(CarData form) {
+    public double calculateFormPriceB(CarData form, ParametersInfo parametersInfo) {
         List<Double> prices = new ArrayList<>();
-        parametersService.getAppliedFilters().forEach(filter ->
+        parametersInfo.getAppliedFilters().forEach(filter ->
                 prices.add(filter.apply(form))
         );
         return (double) prices.stream().mapToInt(i -> i.intValue()).max().getAsInt();
     }
 
-    public int calculateDiffsMethodB(List<Adverts> adverts) {
+    public int calculateDiffsMethodB(List<Adverts> adverts, ParametersInfo parametersInfo) {
 
         List<Integer> diffs = new ArrayList<>();
 
         adverts.stream()
-                .filter(p -> parametersService.applyAdvertFilters().test(p))
+                .filter(p -> parametersInfo.applyAdvertFilters().test(p))
                 .forEach(advert ->
-                        diffs.add(advert.getPrice() - calculateAdvertPriceB(advert))
+                        diffs.add(advert.getPrice() - calculateAdvertPriceB(advert, parametersInfo))
                 );
 
         return (int) diffs.stream().mapToInt(i -> Math.abs(i.intValue())).average().getAsDouble();

@@ -18,21 +18,16 @@ import java.util.stream.Collectors;
 @Service
 public class LPService {
 
-    @Autowired
-    ApproximationStorage approximationStorage;
 
-    @Autowired
-    ParametersService parametersService;
-
-    public LPResultDTO optimize(List<Adverts> adverts) {
+    public LPResultDTO optimize(List<Adverts> adverts, ParametersInfo parametersInfo) {
         AMPL ampl = new AMPL();
 
-        AmplDataDTO amplDataDTO = new AmplDataDTO(adverts).invoke();
+        AmplDataDTO amplDataDTO = new AmplDataDTO(adverts, parametersInfo).invoke();
         List<Adverts> advertFiltered = amplDataDTO.getAdvertFiltered();
 
         try {
             ampl.read("C:/Users/Admin/Desktop/CarPricing/ampl/model.mod");
-            ampl.eval("data; param N := " + parametersService.getAppliedFilters().size() + ";    param M := " + advertFiltered.size() + ";  ");
+            ampl.eval("data; param N := " + parametersInfo.getAppliedFilters().size() + ";    param M := " + advertFiltered.size() + ";  ");
             ampl.eval(amplDataDTO.getTotalPriceStringBuilder().toString());
             ampl.eval(amplDataDTO.getPartPriceStringBuilder().toString());
 
@@ -65,12 +60,14 @@ public class LPService {
 
     private class AmplDataDTO {
         private List<Adverts> adverts;
+        private ParametersInfo parametersInfo;
         private StringBuilder totalPriceStringBuilder;
         private StringBuilder partPriceStringBuilder;
         private List<Adverts> advertFiltered;
 
-        public AmplDataDTO(List<Adverts> adverts) {
+        public AmplDataDTO(List<Adverts> adverts, ParametersInfo parametersInfo) {
             this.adverts = adverts;
+            this.parametersInfo = parametersInfo;
         }
 
         public StringBuilder getTotalPriceStringBuilder() {
@@ -92,14 +89,14 @@ public class LPService {
             totalPriceStringBuilder.append("param C := ");
             partPriceStringBuilder.append("param c : ");
 
-            for (int k = 0; k < parametersService.getAppliedFilters().size(); ++k) {
+            for (int k = 0; k < parametersInfo.getAppliedFilters().size(); ++k) {
                 partPriceStringBuilder.append(" " + (k + 1) + "");
             }
 
             partPriceStringBuilder.append(" := ");
 
             advertFiltered = adverts.stream()
-                    .filter(parametersService.applyAdvertFilters())
+                    .filter(parametersInfo.applyAdvertFilters())
                     .collect(Collectors.toList());
 
             for (int i = 0; i < advertFiltered.size(); ++i) {
@@ -109,7 +106,7 @@ public class LPService {
 
                 List<Double> prices = new ArrayList<>();
 
-                parametersService.getAppliedAdvertsFilters().forEach(filter -> prices.add(filter.apply(advert)));
+                parametersInfo.getAppliedAdvertsFilters().forEach(filter -> prices.add(filter.apply(advert)));
 
                 prices.forEach(price ->
                     partPriceStringBuilder.append(" " + price.intValue() + " ")

@@ -4,19 +4,55 @@ import com.szymanowski.carpricing.Utils;
 import com.szymanowski.carpricing.constants.Params;
 import com.szymanowski.carpricing.dto.CarData;
 import com.szymanowski.carpricing.repository.Adverts;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
+
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-@Service
-public class ParametersService {
 
-    @Autowired
-    ApproximationStorage approximationStorage;
+public class ParametersInfo {
+    //TODO refactor to nie moze byc tak przechowywane
+    SimpleRegression mileageRegression;
+    SimpleRegression yearRegression;
+    Map<Params, Map<String, Double>> means = new HashMap<>();
+
+
+    public void addMeanToMap(Params key, Map<String, Double> value){
+        means.put(key,value);
+    }
+    public Map<String, Double> getMeanByParam(Params key){
+        return means.get(key);
+    }
+
+    public SimpleRegression getMileageRegression() {
+        return mileageRegression;
+    }
+
+    public void setMileageRegression(SimpleRegression mileageRegression) {
+        this.mileageRegression = mileageRegression;
+    }
+
+    public SimpleRegression getYearRegression() {
+        return yearRegression;
+    }
+
+    public void setYearRegression(SimpleRegression yearRegression) {
+        this.yearRegression = yearRegression;
+    }
+
+    public Map<Params, Map<String, Double>> getMeans() {
+        return means;
+    }
+
+    public void setMeans(Map<Params, Map<String, Double>> means) {
+        this.means = means;
+    }
+
 
     private boolean isYear;
     private boolean isMileage;
@@ -26,22 +62,22 @@ public class ParametersService {
     private boolean isFirstOwnerYear;
     private boolean isAccidentYear;
 
-    private Function<CarData, Double> year = p -> approximationStorage.getYearRegression().predict(p.getYear());
-    private Function<CarData, Double> mileage = p -> approximationStorage.getMileageRegression().predict(p.getMileage());
-    private Function<CarData, Double> engine = p -> approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(p));
-    private Function<CarData, Double> color = p -> approximationStorage.getMeans().get(Params.COLOR).get(p.getColor());
-    private Function<CarData, Double> type = p ->  approximationStorage.getMeans().get(Params.TYPE).get(p.getType());
-    private Function<CarData, Double> firstOwnerYear = p -> approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(p, p.getIsFirstOwner()));
-    private Function<CarData, Double> accidentYear = p -> approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(p, p.getHadAccident()));
+    private Function<CarData, Double> year = p -> getYearRegression().predict(p.getYear());
+    private Function<CarData, Double> mileage = p -> getMileageRegression().predict(p.getMileage());
+    private Function<CarData, Double> engine = p -> getMeans().get(Params.ENGINE).get(Utils.getEngineName(p));
+    private Function<CarData, Double> color = p -> getMeans().get(Params.COLOR).get(p.getColor());
+    private Function<CarData, Double> type = p ->  getMeans().get(Params.TYPE).get(p.getType());
+    private Function<CarData, Double> firstOwnerYear = p -> getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(p, p.getIsFirstOwner()));
+    private Function<CarData, Double> accidentYear = p -> getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(p, p.getHadAccident()));
 
 
-    private Function<Adverts, Double> yearA = p -> approximationStorage.getYearRegression().predict(p.getYear());
-    private Function<Adverts, Double> mileageA = p -> approximationStorage.getMileageRegression().predict(p.getMileage());
-    private Function<Adverts, Double> engineA = p -> approximationStorage.getMeans().get(Params.ENGINE).get(Utils.getEngineName(p));
-    private Function<Adverts, Double> colorA = p -> approximationStorage.getMeans().get(Params.COLOR).get(p.getColor());
-    private Function<Adverts, Double> typeA = p ->  approximationStorage.getMeans().get(Params.TYPE).get(p.getType());
-    private Function<Adverts, Double> firstOwnerYearA = p -> approximationStorage.getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(p, p.getFirstOwner()));
-    private Function<Adverts, Double> accidentYearA = p -> approximationStorage.getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(p, p.getHadAccident()));
+    private Function<Adverts, Double> yearA = p -> getYearRegression().predict(p.getYear());
+    private Function<Adverts, Double> mileageA = p -> getMileageRegression().predict(p.getMileage());
+    private Function<Adverts, Double> engineA = p -> getMeans().get(Params.ENGINE).get(Utils.getEngineName(p));
+    private Function<Adverts, Double> colorA = p -> getMeans().get(Params.COLOR).get(p.getColor());
+    private Function<Adverts, Double> typeA = p ->  getMeans().get(Params.TYPE).get(p.getType());
+    private Function<Adverts, Double> firstOwnerYearA = p -> getMeans().get(Params.FIRST_OWNER_YEAR).get(Utils.appendYearToParam(p, p.getFirstOwner()));
+    private Function<Adverts, Double> accidentYearA = p -> getMeans().get(Params.ACCIDENT_YEAR).get(Utils.appendYearToParam(p, p.getHadAccident()));
 
 
     private Predicate<CarData> checkYear() {

@@ -1,10 +1,7 @@
 package com.szymanowski.carpricing.controllers;
 
 import com.szymanowski.carpricing.constants.ApproximationMethod;
-import com.szymanowski.carpricing.dto.CarData;
-import com.szymanowski.carpricing.dto.ChartDTO;
-import com.szymanowski.carpricing.dto.LPResultDTO;
-import com.szymanowski.carpricing.dto.RestResponse;
+import com.szymanowski.carpricing.dto.*;
 import com.szymanowski.carpricing.repository.Adverts;
 import com.szymanowski.carpricing.services.*;
 
@@ -28,8 +25,7 @@ public class RestApiController {
     ApproximationService approximationService;
     @Autowired
     DescriptionAnalyzerService descriptionAnalyzerService;
-    @Autowired
-    ParametersService parametersService;
+
     @Autowired
     PriceCalculatorService priceCalculatorService;
     @Autowired
@@ -48,24 +44,25 @@ public class RestApiController {
 
         if(!CollectionUtils.isEmpty(adverts)) {
             // descriptionAnalyzerService.prepareKeywordPriceMap(adverts);
-            List<ChartDTO> chartDTOS = approximationService.approximate(adverts, form);
-            parametersService.calculateFilters(form);
-            LPResultDTO optimizationResult = lpService.optimize(adverts);
+            ApproximationData approximationData = approximationService.approximate(adverts, form);
+            ParametersInfo parametersInfo = approximationData.getParametersInfo();
+            parametersInfo.calculateFilters(form);
+            LPResultDTO optimizationResult = lpService.optimize(adverts, parametersInfo);
             Double price;
             int averageDiff;
             int median;
             if (ApproximationMethod.LINEAR_PROGRAMMING.equals(form.getMethod())) {
-                price = priceCalculatorService.calculatePrice(form, optimizationResult.getwParams());
-                averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams());
-                median = priceCalculatorService.calculateMedian(adverts, optimizationResult.getwParams());
+                price = priceCalculatorService.calculatePrice(form, optimizationResult.getwParams(), parametersInfo);
+                averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams(), parametersInfo);
+                median = priceCalculatorService.calculateMedian(adverts, optimizationResult.getwParams(), parametersInfo);
             } else {
-                price =  priceCalculatorService.calculateFormPriceB(form);
-                averageDiff = priceCalculatorService.calculateDiffsMethodB(adverts);
-                median = priceCalculatorService.calculateMedianB(adverts);
+                price =  priceCalculatorService.calculateFormPriceB(form, parametersInfo);
+                averageDiff = priceCalculatorService.calculateDiffsMethodB(adverts, parametersInfo);
+                median = priceCalculatorService.calculateMedianB(adverts, parametersInfo);
             }
 
-            String filtersInfo = parametersService.getAppliedFiltersNamesAndValues(optimizationResult.getwParams());
-            return createSearchRespone(chartDTOS, optimizationResult, price, averageDiff, median, filtersInfo, form.getMethod());
+            String filtersInfo = parametersInfo.getAppliedFiltersNamesAndValues(optimizationResult.getwParams());
+            return createSearchRespone(approximationData.getCharts(), optimizationResult, price, averageDiff, median, filtersInfo, form.getMethod());
         } else {
             return createSearchRespone("Nie znaleziono żadnych ogłoszeń");
         }
