@@ -15,10 +15,9 @@ export default class CarForm extends Component {
             power: 200,
             color: "Czarny",
             type: "Sedan",
-            isNew: false,
+            searchNewAdverts: false,
             hadAccident: true,
             isFirstOwner: false,
-            description: "...opis",
             method: "LINEAR_PROGRAMMING",
             makeList:[],
             modelList:[],
@@ -183,11 +182,11 @@ export default class CarForm extends Component {
                     </select>
                 </label>
                 <label className="grid-item">
-                    Pobierz dane:
+                    Pobierz dane z aktualnych ogłoszeń:
                     <input
-                        name="isNew"
+                        name="searchNewAdverts"
                         type="checkbox"
-                        checked={this.state.isNew}
+                        checked={this.state.searchNewAdverts}
                         onChange={this.handleCheckboxChange}/>
                 </label>
             </div>
@@ -331,10 +330,9 @@ export default class CarForm extends Component {
             power: state.power,
             color: state.color,
             type: state.type,
-            isNew: state.isNew,
+            searchNewAdverts: state.searchNewAdverts,
             hadAccident: state.hadAccident,
             isFirstOwner: state.isFirstOwner,
-            description: state.description,
             method: state.method
         };
     }

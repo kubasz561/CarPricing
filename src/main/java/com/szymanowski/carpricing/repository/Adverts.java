@@ -31,12 +31,8 @@ public class Adverts {
 
     private String type;
     private String color;
-    private Boolean isNew;
     private Boolean hadAccident;
     private Boolean isFirstOwner;
-
-    @Column(length = 4096)
-    private String description;
 
 
     public Long getAdvertId() {
@@ -143,14 +139,6 @@ public class Adverts {
         this.color = color;
     }
 
-    public Boolean getNew() {
-        return isNew;
-    }
-
-    public void setNew(Boolean aNew) {
-        isNew = aNew;
-    }
-
     public Boolean getHadAccident() {
         return hadAccident;
     }
@@ -167,13 +155,6 @@ public class Adverts {
         isFirstOwner = firstOwner;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public Date getSaveDate() {
         return saveDate;

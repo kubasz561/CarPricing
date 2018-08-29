@@ -2,7 +2,7 @@ package com.szymanowski.carpricing.services;
 
 import com.szymanowski.carpricing.Utils;
 import com.szymanowski.carpricing.dto.CarData;
-import com.szymanowski.carpricing.populator.AdvertParser;
+import com.szymanowski.carpricing.parser.AdvertParser;
 import com.szymanowski.carpricing.repository.Adverts;
 import com.szymanowski.carpricing.repository.AdvertsRepository;
 import org.jsoup.Jsoup;
@@ -35,7 +35,7 @@ public class SearchService {
     private AdvertsRepository advertsRepository;
 
     public List<Adverts> searchInDatabase(CarData form) {
-        return form.getVersion() == null ? advertsRepository.findByMakeAndModelAndSaveDateAfter(form.getMake(), form.getModel(), Utils.getYearAgoDate())
+        return StringUtils.isEmpty(form.getVersion()) ? advertsRepository.findByMakeAndModelAndSaveDateAfter(form.getMake(), form.getModel(), Utils.getYearAgoDate())
                 : advertsRepository.findByMakeAndModelAndVersionAndSaveDateAfter(form.getMake(),form.getModel(), form.getVersion(), Utils.getYearAgoDate());
     }
 

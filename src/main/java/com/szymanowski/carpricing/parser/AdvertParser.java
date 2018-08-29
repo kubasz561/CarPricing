@@ -1,16 +1,14 @@
-package com.szymanowski.carpricing.populator;
+package com.szymanowski.carpricing.parser;
 
 import com.szymanowski.carpricing.repository.Adverts;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class AdvertParser {
@@ -18,7 +16,6 @@ public class AdvertParser {
         Elements title = doc.getElementsByClass("offer-title");
         Elements price = doc.getElementsByClass("offer-price__number");
         Elements items = doc.getElementsByClass("offer-params__item");
-        Elements desc = doc.getElementsByClass("offer-description");
         boolean isNettoPrice = false;
         if(doc.getElementsByClass("offer-price__details").size() > 0)
             isNettoPrice = doc.getElementsByClass("offer-price__details").get(0).text().toLowerCase().contains("netto");
@@ -39,11 +36,6 @@ public class AdvertParser {
             keys.put(node1.text(),node3.text());
         });
 
-        String description = desc.get(0).childNodes().get(3).childNodes().stream()
-                .filter(a-> a instanceof TextNode)
-                .map(a->(TextNode)a)
-                .map(TextNode::text)
-                .collect(Collectors.joining(" "));
 
         target.setName(advertTitle);
         target.setAdvertId(advertID);
@@ -57,7 +49,6 @@ public class AdvertParser {
         }
         if(keys.containsKey("Przebieg"))
             target.setMileage(Integer.parseInt(keys.get("Przebieg").replaceAll("[\\D]", "")));
-        target.setNew("Nowy".equals(keys.get("Stan")));
         target.setType(keys.get("Typ"));
         target.setFirstOwner(keys.containsKey("Pierwszy właściciel"));
         target.setHadAccident(!keys.containsKey("Bezwypadkowy"));
@@ -65,7 +56,6 @@ public class AdvertParser {
         if(keys.containsKey("Pojemność skokowa")) {
             target.setEngineCapacity(Integer.parseInt(keys.get("Pojemność skokowa").substring(0,5).replaceAll("[\\D]", "")));
         }
-        target.setDescription(description.length() > 4001 ? description.substring(0,4000) : description);
     }
 
     private Integer calculatePrice(String advertPrice, boolean isNettoPrice) {

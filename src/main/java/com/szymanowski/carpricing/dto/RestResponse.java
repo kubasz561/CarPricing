@@ -5,19 +5,19 @@ import java.util.List;
 public class RestResponse {
 
     private List<ChartDTO> charts;
-    private LPResultDTO lpResultDTO;
+    private int advertsCount;
     private int formPrice;
     private int averageDiff;
     private int median;
     private String filtersInfo;
     private String message;
 
-    public LPResultDTO getLpResultDTO() {
-        return lpResultDTO;
+    public int getAdvertsCount() {
+        return advertsCount;
     }
 
-    public void setLpResultDTO(LPResultDTO lpResultDTO) {
-        this.lpResultDTO = lpResultDTO;
+    public void setAdvertsCount(int advertsCount) {
+        this.advertsCount = advertsCount;
     }
 
     public int getFormPrice() {

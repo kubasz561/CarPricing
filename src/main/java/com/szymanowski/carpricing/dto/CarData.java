@@ -21,9 +21,7 @@ public class CarData {
     private Boolean hadAccident;//+year - mandatory
     private Boolean isFirstOwner;//+year - mandatory
 
-    private Boolean isNew;
-
-    private String description;
+    private Boolean searchNewAdverts;
 
     private ApproximationMethod method;
 
@@ -104,12 +102,12 @@ public class CarData {
         this.color = color;
     }
 
-    public Boolean getIsNew() {
-        return isNew;
+    public Boolean getSearchNewAdverts() {
+        return searchNewAdverts;
     }
 
-    public void setIsNew(Boolean isNew) {
-        this.isNew = isNew;
+    public void setSearchNewAdverts(Boolean searchNewAdverts) {
+        this.searchNewAdverts = searchNewAdverts;
     }
 
     public Boolean getHadAccident() {
@@ -126,14 +124,6 @@ public class CarData {
 
     public void setIsFirstOwner(Boolean isFirstOwner) {
         this.isFirstOwner = isFirstOwner;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public ApproximationMethod getMethod() {
