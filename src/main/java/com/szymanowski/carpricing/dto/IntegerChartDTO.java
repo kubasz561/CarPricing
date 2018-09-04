@@ -3,17 +3,18 @@ package com.szymanowski.carpricing.dto;
 import java.util.List;
 
 public class IntegerChartDTO extends ChartDTO {
+    private List<Integer> advertX;
+    private Integer formX;
+    private List<Integer> regressX;
+    private double r;
+
+
     public double getR() {
         return r;
     }
-
     public void setR(double r) {
         this.r = r;
     }
-
-    private double r;
-
-    private List<Integer> advertX;
 
     public Integer getFormX() {
         return formX;
@@ -23,8 +24,6 @@ public class IntegerChartDTO extends ChartDTO {
         this.formX = formX;
     }
 
-    private Integer formX;
-
     public List<Integer> getRegressX() {
         return regressX;
     }
@@ -32,8 +31,6 @@ public class IntegerChartDTO extends ChartDTO {
     public void setRegressX(List<Integer> regressX) {
         this.regressX = regressX;
     }
-
-    private List<Integer> regressX;
 
     public List<Integer> getAdvertX() {
         return advertX;

@@ -110,9 +110,9 @@ export default class CarForm extends Component {
                 <label className="grid-item">
                     Rodzaj paliwa:
                     <select name="fuel" value={this.state.fuel} onChange={this.handleInputChange}>
-                        <option value="benzyna">Benzyna</option>
-                        <option value="diesel">Diesel</option>
-                        <option value="LPG">Benzyna + LPG</option>
+                        <option value="Benzyna">Benzyna</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Benzyna + LPG">Benzyna + LPG</option>
                     </select>
                 </label>
                 <label className="grid-item">
@@ -182,7 +182,7 @@ export default class CarForm extends Component {
                     </select>
                 </label>
                 <label className="grid-item">
-                    Pobierz dane z aktualnych ogłoszeń:
+                    Pobierz aktualne ogłoszenia:
                     <input
                         name="searchNewAdverts"
                         type="checkbox"

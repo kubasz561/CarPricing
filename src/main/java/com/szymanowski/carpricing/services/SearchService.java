@@ -25,7 +25,7 @@ public class SearchService {
 
     private static final String BASE = "https://www.otomoto.pl/osobowe/";
     private static final String END = "/?page=";
-    private static final int MAX_PAGE_SIZE = 1;
+    private static final int MAX_PAGE_SIZE = 12;
     private static final boolean ONE_ADVERT_ONLY = false;
 
     @Autowired

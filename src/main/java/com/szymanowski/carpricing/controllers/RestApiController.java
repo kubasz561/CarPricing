@@ -42,13 +42,15 @@ public class RestApiController {
                 Double price = priceCalculatorService.calculatePrice(form, optimizationResult.getwParams(), parametersInfo);
                 int averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams(), parametersInfo);
                 int median = priceCalculatorService.calculateMedian(adverts, optimizationResult.getwParams(), parametersInfo);
+                int diffPercent = priceCalculatorService.calculateDiffMedianPercent(adverts, median);
                 String filtersInfo = parametersInfo.getAppliedFiltersNamesAndValues(optimizationResult.getwParams());
-                return createSearchResponse(approximationData.getCharts(), optimizationResult.getFilteredAdvertsCount(), price, averageDiff, median, filtersInfo, form.getMethod());
+                return createSearchResponse(approximationData.getCharts(), optimizationResult.getFilteredAdvertsCount(), price, averageDiff, median, diffPercent, filtersInfo, form.getMethod());
             } else {
                 Double price =  priceCalculatorService.calculateFormPriceB(form, parametersInfo);
                 int averageDiff = priceCalculatorService.calculateDiffsMethodB(adverts, parametersInfo);
                 int median = priceCalculatorService.calculateMedianB(adverts, parametersInfo);
-                return createSearchResponse(approximationData.getCharts(), adverts.size(), price, averageDiff, median, null, form.getMethod());
+                int diffPercent = priceCalculatorService.calculateDiffMedianPercent(adverts, median);
+                return createSearchResponse(approximationData.getCharts(), adverts.size(), price, averageDiff, median, diffPercent, null, form.getMethod());
             }
         } else {
             return createSearchResponse("Nie znaleziono żadnych ogłoszeń");
@@ -72,9 +74,10 @@ public class RestApiController {
     }
 
 
-    private RestResponse createSearchResponse(List<ChartDTO> chartDTOS, int advertsCount, Double price, int averageDiff, int median, String filtersInfo, ApproximationMethod method) {
+    private RestResponse createSearchResponse(List<ChartDTO> chartDTOS, int advertsCount, Double price, int averageDiff, int median, int diffPercent, String filtersInfo, ApproximationMethod method) {
         RestResponse restResponse = new RestResponse();
         restResponse.setAverageDiff(averageDiff);
+        restResponse.setDiffPercent(diffPercent);
         restResponse.setMedian(median);
         restResponse.setFormPrice(price != null ? price.intValue(): 0);
         restResponse.setAdvertsCount(advertsCount);

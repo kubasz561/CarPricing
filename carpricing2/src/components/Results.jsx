@@ -19,6 +19,7 @@ export default class Results extends Component {
                     <h2>Proponowana Cena: {this.props.response.formPrice} zł </h2>
                     <h4>Średnie odchylenie od ceny: {this.props.response.averageDiff} zł </h4>
                     <h4>Mediana odchylenia od ceny: {this.props.response.median} zł </h4>
+                    <h4>Mediana odchylenia od ceny stanowi {this.props.response.diffPercent}% średniej ceny pojazdu</h4>
                     <h4>Obliczone na podstawie {this.props.response.advertsCount} ogłoszeń </h4>
                     {this.props.response.filtersInfo && <h4>Parametry wzięte pod uwagę: (ilość: {this.props.response.filtersInfo.split(",").length-1})</h4>}
                     {this.props.response.filtersInfo && <ParamsTable filters={this.props.response.filtersInfo} />}

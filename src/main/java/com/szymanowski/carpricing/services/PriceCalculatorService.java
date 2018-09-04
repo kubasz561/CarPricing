@@ -45,6 +45,13 @@ public class PriceCalculatorService {
 
         return (int) diffs.stream().mapToInt(i -> Math.abs(i.intValue())).average().getAsDouble();
     }
+    public int calculateDiffMedianPercent(List<Adverts> adverts, int medianDiff) {
+
+
+        return (int) (medianDiff*100/adverts.stream()
+                .map(Adverts::getPrice).mapToInt(i -> Math.abs(i.intValue())).average().getAsDouble());
+
+    }
 
     public int calculateMedian(List<Adverts> adverts, double[] w, ParametersInfo parametersInfo) {
         List<Double> diffs = new ArrayList<>();

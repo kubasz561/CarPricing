@@ -3,7 +3,7 @@ package com.szymanowski.carpricing.dto;
 
 import java.util.List;
 
-public class ChartDTO {
+public abstract class ChartDTO {
 
     private String type;
     private String mainChartMode;

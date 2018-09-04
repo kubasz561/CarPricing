@@ -8,10 +8,10 @@ public class RestResponse {
     private int advertsCount;
     private int formPrice;
     private int averageDiff;
+    private int diffPercent;
     private int median;
     private String filtersInfo;
     private String message;
-
     public int getAdvertsCount() {
         return advertsCount;
     }
@@ -34,6 +34,14 @@ public class RestResponse {
 
     public void setAverageDiff(int averageDiff) {
         this.averageDiff = averageDiff;
+    }
+
+    public int getDiffPercent() {
+        return diffPercent;
+    }
+
+    public void setDiffPercent(int diffPercent) {
+        this.diffPercent = diffPercent;
     }
 
     public List<ChartDTO> getCharts() {

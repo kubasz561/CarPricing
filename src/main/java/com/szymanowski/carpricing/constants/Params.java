@@ -5,11 +5,9 @@ public enum Params {
     YEAR("Rok"),
     ENGINE("Silnik"),
     COLOR("Kolor"),
-    ACCIDENT_YEAR("Czy miał wypadek - rocznie"),
-    COLOR_YEAR("Color - Year"),
-    FIRST_OWNER_YEAR("Pierwszy właściciel - rocznie"),
     TYPE("Typ"),
-    TYPE_YEAR("Type - Year");
+    ACCIDENT_YEAR("Czy miał wypadek - rocznie"),
+    FIRST_OWNER_YEAR("Pierwszy właściciel - rocznie");
 
     private String value;
 
