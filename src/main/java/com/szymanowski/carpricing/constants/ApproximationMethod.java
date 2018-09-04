@@ -1,7 +1,7 @@
 package com.szymanowski.carpricing.constants;
 
 public enum ApproximationMethod {
-    LINEAR_PROGRAMMING("LP"),
+    MATH_PROGRAMMING("MP"),
     MAX_PRICE("MAX");
 
     private String value;

@@ -18,7 +18,7 @@ export default class CarForm extends Component {
             searchNewAdverts: false,
             hadAccident: true,
             isFirstOwner: false,
-            method: "LINEAR_PROGRAMMING",
+            method: "MATH_PROGRAMMING",
             makeList:[],
             modelList:[],
             versionList:[],
@@ -177,7 +177,7 @@ export default class CarForm extends Component {
                 <label className="grid-item">
                     Metoda aproksymacji:
                     <select name="method" value={this.state.method} onChange={this.handleInputChange}>
-                        <option value="LINEAR_PROGRAMMING">LINEAR_PROGRAMMING</option>
+                        <option value="MATH_PROGRAMMING">MATH_PROGRAMMING</option>
                         <option value="MAX_PRICE">MAX_PRICE</option>
                     </select>
                 </label>
