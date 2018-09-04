@@ -30,8 +30,8 @@ export default class Results extends Component {
                 <div className="grid-container">
 
                 {
-                    this.props.response && this.props.response.charts && this.props.response.charts.map(chart =>
-                        <div className="grid-results-item">
+                    this.props.response && this.props.response.charts && this.props.response.charts.map((chart, index) =>
+                        <div className="grid-results-item" key={index}>
                             <div>
                                 <Plot
                                     data={[
