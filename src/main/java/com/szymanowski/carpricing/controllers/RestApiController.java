@@ -27,7 +27,7 @@ public class RestApiController {
     @Autowired
     MakeModelService makeModelService;
     @Autowired
-    LPService lpService;
+    MPService mPService;
 
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public RestResponse search(CarData form) {
@@ -38,7 +38,7 @@ public class RestApiController {
             ParametersInfo parametersInfo = approximationData.getParametersInfo();
             parametersInfo.calculateFilters(form);
             if (ApproximationMethod.LINEAR_PROGRAMMING.equals(form.getMethod())) {
-                LPResultDTO optimizationResult = lpService.optimize(adverts, parametersInfo);
+                MPResultDTO optimizationResult = mPService.optimize(adverts, parametersInfo);
                 Double price = priceCalculatorService.calculatePrice(form, optimizationResult.getwParams(), parametersInfo);
                 int averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams(), parametersInfo);
                 int median = priceCalculatorService.calculateMedian(adverts, optimizationResult.getwParams(), parametersInfo);

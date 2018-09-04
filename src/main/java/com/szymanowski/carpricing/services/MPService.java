@@ -2,7 +2,7 @@ package com.szymanowski.carpricing.services;
 
 import com.ampl.*;
 
-import com.szymanowski.carpricing.dto.LPResultDTO;
+import com.szymanowski.carpricing.dto.MPResultDTO;
 import com.szymanowski.carpricing.repository.Adverts;
 import org.apache.commons.math3.util.Precision;
 import org.springframework.stereotype.Service;
@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class LPService {
+public class MPService {
 
 
-    public LPResultDTO optimize(List<Adverts> adverts, ParametersInfo parametersInfo) {
+    public MPResultDTO optimize(List<Adverts> adverts, ParametersInfo parametersInfo) {
         AMPL ampl = new AMPL();
 
         AmplDataDTO amplDataDTO = new AmplDataDTO(adverts, parametersInfo).invoke();
@@ -36,21 +36,21 @@ public class LPService {
 
             Objective totalDiff = ampl.getObjective("f_celu");
 
-            return createLPResult(w, totalDiff, advertFiltered.size());
+            return createMPResult(w, totalDiff, advertFiltered.size());
         } catch (IOException e) {
             System.out.println(e.getMessage());
         } finally {
             ampl.close();
         }
-        return new LPResultDTO();
+        return new MPResultDTO();
     }
 
-    private LPResultDTO createLPResult(Variable v, Objective o, int filteredAdvertsSize){
-        LPResultDTO lpResult = new LPResultDTO();
-        lpResult.setTotalDiff((int)o.value());
-        lpResult.setwParams(roundWParams(v.getValues().getColumnAsDoubles("val")));
-        lpResult.setFilteredAdvertsCount(filteredAdvertsSize);
-        return lpResult;
+    private MPResultDTO createMPResult(Variable v, Objective o, int filteredAdvertsSize){
+        MPResultDTO mpResult = new MPResultDTO();
+        mpResult.setTotalDiff((int)o.value());
+        mpResult.setwParams(roundWParams(v.getValues().getColumnAsDoubles("val")));
+        mpResult.setFilteredAdvertsCount(filteredAdvertsSize);
+        return mpResult;
     }
     private double[] roundWParams(double[] wParams){
        return Arrays.stream(wParams).map(w -> Precision.round(w, 2)).toArray();

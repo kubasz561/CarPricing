@@ -1,7 +1,7 @@
 package com.szymanowski.carpricing.dto;
 
 
-public class LPResultDTO {
+public class MPResultDTO {
     private double totalDiff;
     private int filteredAdvertsCount;
     private double[] wParams;
