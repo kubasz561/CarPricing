@@ -18,7 +18,7 @@ export default class CarForm extends Component {
             searchNewAdverts: false,
             hadAccident: true,
             isFirstOwner: false,
-            method: "MATH_PROGRAMMING",
+            method: "WEIGHTED_MEAN",
             makeList:[],
             modelList:[],
             versionList:[],
@@ -177,8 +177,8 @@ export default class CarForm extends Component {
                 <label className="grid-item">
                     Metoda aproksymacji:
                     <select name="method" value={this.state.method} onChange={this.handleInputChange}>
-                        <option value="MATH_PROGRAMMING">MATH_PROGRAMMING</option>
-                        <option value="MAX_PRICE">MAX_PRICE</option>
+                        <option value="WEIGHTED_MEAN">Średnia ważona</option>
+                        <option value="MAX_PRICE">Maksimum</option>
                     </select>
                 </label>
                 <label className="grid-item">

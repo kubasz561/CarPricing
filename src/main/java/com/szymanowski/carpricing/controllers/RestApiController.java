@@ -37,7 +37,7 @@ public class RestApiController {
             ApproximationData approximationData = approximationService.approximate(adverts, form);
             ParametersInfo parametersInfo = approximationData.getParametersInfo();
             parametersInfo.calculateFilters(form);
-            if (ApproximationMethod.MATH_PROGRAMMING.equals(form.getMethod())) {
+            if (ApproximationMethod.WEIGHTED_MEAN.equals(form.getMethod())) {
                 MPResultDTO optimizationResult = mPService.optimize(adverts, parametersInfo);
                 Double price = priceCalculatorService.calculatePrice(form, optimizationResult.getwParams(), parametersInfo);
                 int averageDiff = priceCalculatorService.calculateDiffs(adverts, optimizationResult.getwParams(), parametersInfo);

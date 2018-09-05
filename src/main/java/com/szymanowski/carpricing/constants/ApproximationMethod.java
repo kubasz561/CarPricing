@@ -1,8 +1,8 @@
 package com.szymanowski.carpricing.constants;
 
 public enum ApproximationMethod {
-    MATH_PROGRAMMING("MP"),
-    MAX_PRICE("MAX");
+    WEIGHTED_MEAN("WEIGHTED_MEAN"),
+    MAX_PRICE("MAX_PRICE");
 
     private String value;
 
