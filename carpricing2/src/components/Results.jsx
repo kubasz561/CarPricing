@@ -2,6 +2,9 @@ import React, {Component} from 'react';
 import Plot from 'react-plotly.js';
 import ParamsTable from './ParamsTable';
 
+/**
+ * Komponent wyświetlający wynik wyceny, kryteria oceny jakości wyceny oraz wykresy zależności ceny od parametrów.
+ */
 export default class Results extends Component {
 
     render() {

@@ -4,6 +4,9 @@ import './App.css';
 import Results from './components/Results';
 import CarForm from "./components/CarForm";
 
+/**
+ * Komponent startowy aplikacji, synchronizuje komponenty CarForm i Results.
+ */
 class App extends Component {
     constructor(props) {
         super(props);
@@ -28,6 +31,9 @@ class App extends Component {
         );
     }
 
+    /**
+     * Przekierowanie odpowiedzi z serwera do komponentu Results
+     */
     handleResponse(result) {
         this.setState({
             response: result

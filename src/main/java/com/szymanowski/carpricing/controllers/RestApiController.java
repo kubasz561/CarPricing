@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Główny kontroler aplikacji, poprzez którego api aplikacja kliencka komunikuje się z serwerem.
+ * Odpowiada za główny algorytm aplikacji obejmujący pobranie ogłoszeń, wyznaczenie współczynników, stworzenie danych wykresów oraz wycenę.
+ * Koordynuje działanie wszystkich serwisów.
+ */
 @RequestMapping("/api")
 @RestController
 public class RestApiController {
@@ -29,6 +34,11 @@ public class RestApiController {
     @Autowired
     MPService mPService;
 
+    /**
+     * Metoda odpowiedzialna za wycenę auta
+     * @param form - formularz wypełniany przez użytkownika w aplikacji klienckiej
+     * @return informacje dotyczące wyceny i dane potrzebne do sporządzenia wykresów
+     */
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public RestResponse search(CarData form) {
         List<Adverts> adverts = form.getSearchNewAdverts() ? searchService.search(form) : searchService.searchInDatabase(form);
@@ -58,16 +68,31 @@ public class RestApiController {
 
     }
 
+    /**
+     * Pobranie dostępnych marek pojazdu
+     * @return lista dostępnych marek pojazdu
+     */
     @RequestMapping(value = "/getMakes", method = RequestMethod.GET)
     public List<String> getMakes() {
         return makeModelService.getAllMakes();
     }
 
+    /**
+     * Pobranie dostępnych modeli pojazdu
+     * @param make - marka pojazdu
+     * @return lista dostępnych modeli dla podanej marki
+     */
     @RequestMapping(value = "/getModels", method = RequestMethod.GET)
     public List<String> getModels(@RequestParam String make) {
         return makeModelService.getModelsForMake(make);
     }
 
+    /**
+     * Pobranie dostępnych wersji pojazdu
+     * @param make - marka pojazdu
+     * @param model - model pojazdu
+     * @return lista dostępnych wersji pojazdu dla podanego modelu i marki
+     */
     @RequestMapping(value = "/getVersions", method = RequestMethod.GET)
     public List<String> getVersions(@RequestParam String make, @RequestParam String model) {
         return makeModelService.getVersionForMakeModel(make,model);

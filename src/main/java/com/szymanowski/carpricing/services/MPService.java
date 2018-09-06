@@ -14,10 +14,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
+/**
+ * Odpowiada za wyznaczanie współczynników średniej ważonej metodą programowania kwadratowego.
+ * Posiada odniesienie do biblioteki AMPL Java API.
+ * Tworzy zbiór danych zadania programowania kwadratowego na podstawie bazy ogłoszeń, a następnie rozwiązuje zadanie korzystając z solverów AMPL
+ */
 @Service
 public class MPService {
 
-
+    /**
+     * Metoda rozwiązuje zadanie programowania liniowego przy pomocy AMPL
+     * @param adverts - lista ogłoszeń która będzie stanowić dane źródłowe do modelu optymalizacji
+     * @param parametersInfo - klasa przechowująca dane dotyczące uwzględnianych parametrów pojazdu
+     * @return tablica współczynników, liczba ogłoszeń na podstawie których została przeprowadzona optymalizacja
+     */
     public MPResultDTO optimize(List<Adverts> adverts, ParametersInfo parametersInfo) {
         AMPL ampl = new AMPL();
 
@@ -26,7 +36,7 @@ public class MPService {
 
         try {
             ampl.read("ampl/models/model.mod");
-            ampl.eval("data; param N := " + parametersInfo.getAppliedFilters().size() + ";    param M := " + advertFiltered.size() + ";  ");
+            ampl.eval("data; param N := " + parametersInfo.getPartPriceCalculators().size() + ";    param M := " + advertFiltered.size() + ";  ");
             ampl.eval(amplDataDTO.getTotalPriceStringBuilder().toString());
             ampl.eval(amplDataDTO.getPartPriceStringBuilder().toString());
 
@@ -56,7 +66,9 @@ public class MPService {
        return Arrays.stream(wParams).map(w -> Precision.round(w, 2)).toArray();
     }
 
-
+    /**
+     * Klasa odpowiada za zbudowanie na podstawie bazy ogłoszeń pliku z danymi źródłowymi w języku AMPL
+     */
     private class AmplDataDTO {
         private List<Adverts> adverts;
         private ParametersInfo parametersInfo;
@@ -88,7 +100,7 @@ public class MPService {
             totalPriceStringBuilder.append("param C := ");
             partPriceStringBuilder.append("param c : ");
 
-            for (int k = 0; k < parametersInfo.getAppliedFilters().size(); ++k) {
+            for (int k = 0; k < parametersInfo.getPartPriceCalculators().size(); ++k) {
                 partPriceStringBuilder.append(" " + (k + 1) + "");
             }
 
@@ -105,7 +117,7 @@ public class MPService {
 
                 List<Double> prices = new ArrayList<>();
 
-                parametersInfo.getAppliedAdvertsFilters().forEach(filter -> prices.add(filter.apply(advert)));
+                parametersInfo.getPartPriceCalculatorsForAdverts().forEach(filter -> prices.add(filter.apply(advert)));
 
                 prices.forEach(price ->
                     partPriceStringBuilder.append(" " + price.intValue() + " ")

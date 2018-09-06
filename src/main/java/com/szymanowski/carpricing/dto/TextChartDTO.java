@@ -2,6 +2,9 @@ package com.szymanowski.carpricing.dto;
 
 import java.util.List;
 
+/**
+ * Przechowuje dane wykresów typu zbiór danych.
+ */
 public class TextChartDTO extends ChartDTO{
 
 

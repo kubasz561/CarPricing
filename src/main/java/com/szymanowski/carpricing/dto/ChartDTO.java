@@ -3,6 +3,9 @@ package com.szymanowski.carpricing.dto;
 
 import java.util.List;
 
+/**
+ * Prototyp klasy przechowującej dane wykresów.
+ */
 public abstract class ChartDTO {
 
     private String type;

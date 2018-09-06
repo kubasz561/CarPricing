@@ -1,5 +1,8 @@
 import React, {Component} from 'react';
 
+/**
+ * Komponent wyświetlający tabelę współczynników
+ */
 export default class ParamsTable extends Component {
 
     render() {

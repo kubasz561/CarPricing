@@ -1,5 +1,8 @@
 package com.szymanowski.carpricing.constants;
 
+/**
+ * Typ wyliczeniowy rodzaju wykresu.
+ */
 public enum ChartMode {
     LINE("lines"),
     POINT("markers");

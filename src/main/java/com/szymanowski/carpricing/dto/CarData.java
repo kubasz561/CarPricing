@@ -2,6 +2,9 @@ package com.szymanowski.carpricing.dto;
 
 import com.szymanowski.carpricing.constants.ApproximationMethod;
 
+/**
+ * Przechowuje dane formularza aplikacji klienckiej.
+ */
 public class CarData {
 
     private String make;

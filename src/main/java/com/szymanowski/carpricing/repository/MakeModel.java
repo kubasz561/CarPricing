@@ -5,6 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * Klasa reprezentująca tabelę MakeModel. Tabela zawiera informacje na temat możliwych do wyszukania pojazdów
+ */
 @Entity
 public class MakeModel {
     @Id

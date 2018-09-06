@@ -14,12 +14,22 @@ import org.springframework.util.MultiValueMap;
 import java.util.*;
 import java.util.List;
 
+/**
+ * Klasa odpowiada za operacje matematyczne takie jak tworzenie regresji oraz obliczanie średnich arytmetycznych.
+ * Korzysta z biblioteki Apache Commons Math.
+ * Tworzy i zwraca dane niezbędne do wyświetlenia wykresów zależności ceny od parametrów.
+ * Tworzy klasę ParametersInfo i zapisuje do niej utworzoną regresję i mapę zbiorów średnich.
+ */
 @Service
 public class ApproximationService {
     private final int MIN_ENGINE_COUNT = 3;
 
 
-
+    /**
+     * Metoda przygotowuje dane do obliczenia cen cząstkowych, oblicza proste regresji i średnie dla każdego zbioru.
+     * Dane są zapisywane w obiekcie typu ParametersInfo
+     * Tworzy dane niezbędne do wykonania wykresów
+     */
     public ApproximationData approximate(List<Adverts> adverts, CarData form){
         List<ChartDTO> charts = new ArrayList<>();
         ParametersInfo parametersInfo = new ParametersInfo();

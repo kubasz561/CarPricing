@@ -3,6 +3,9 @@ package com.szymanowski.carpricing.repository;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Klasa reprezentująca tabelę Adverts. Tabela zawiera ogłoszenia znalezione w internecie
+ */
 @Entity
 public class Adverts {
     @Id

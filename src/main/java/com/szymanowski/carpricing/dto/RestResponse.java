@@ -2,6 +2,9 @@ package com.szymanowski.carpricing.dto;
 
 import java.util.List;
 
+/**
+ * Przechowuje dane zwracane w odpowiedzi serwera na metodę search, czyli wszystkie dane dotyczące wyceny.
+ */
 public class RestResponse {
 
     private List<ChartDTO> charts;

@@ -1,5 +1,8 @@
 package com.szymanowski.carpricing.constants;
 
+/**
+ * Typ wyliczeniowy parametrów pojazdu.
+ */
 public enum Params {
     MILEAGE("Przebieg"),
     YEAR("Rok"),

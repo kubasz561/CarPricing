@@ -19,14 +19,17 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Klasa dpowiada za wyszukiwanie ogłoszeń w serwisie Otomoto.pl oraz w bazie danych.
+ * Jeżeli ogłoszenia nie ma w bazie danych to jest w niej zapisywane.
+ * Do parsowania kodu HTML ogłoszeń używa klasy AdvertParser.
+ */
 @Service
 public class SearchService {
     private static final Logger LOG = LoggerFactory.getLogger(SearchService.class);
 
     private static final String BASE = "https://www.otomoto.pl/osobowe/";
     private static final String END = "/?page=";
-    private static final int MAX_PAGE_SIZE = 12;
-    private static final boolean ONE_ADVERT_ONLY = false;
 
     @Autowired
     AdvertParser advertParser;
@@ -34,12 +37,22 @@ public class SearchService {
     @Autowired
     private AdvertsRepository advertsRepository;
 
+    /**
+     * Wyszukiwanie ogłoszeń w bazie danych zapisanych nie dawniej niż rok temu
+     * @param form - formularz zawierające dane dotyczące marki, modelu i wersji
+     * @return lista ogłoszeń
+     */
     public List<Adverts> searchInDatabase(CarData form) {
         return StringUtils.isEmpty(form.getVersion()) ? advertsRepository.findByMakeAndModelAndSaveDateAfter(form.getMake(), form.getModel(), Utils.getYearAgoDate())
                 : advertsRepository.findByMakeAndModelAndVersionAndSaveDateAfter(form.getMake(),form.getModel(), form.getVersion(), Utils.getYearAgoDate());
     }
 
-    // "https://www.otomoto.pl/osobowe/volkswagen/golf/v-2003-2009/?page=1";  page == 32 adverts
+    /**
+     * Wyszukiwanie i pobieranie danych ogłoszeń z serwisu Otomoto.pl
+     * Jeżeli ogłoszenia nie ma w bazie danych, to jest w niej zapisywane.
+     * @param form - formularz zawierające dane dotyczące marki, modelu i wersji
+     * @return lista ogłoszeń
+     */
     public List<Adverts> search(CarData form) {
         List<Adverts> adverts = new ArrayList<>();
         List<Adverts> databaseAdverts = searchInDatabase(form);
@@ -47,17 +60,14 @@ public class SearchService {
         try {
             Document doc = Jsoup.connect(url + 1).get();
             int numberOfPages = getNumberOfPages(doc);
-           // wait3();//TODO sprawdzenie ajax call > 3min
-            int max = numberOfPages > MAX_PAGE_SIZE ? MAX_PAGE_SIZE : numberOfPages;//TODO zabezpieczenie na ilosc stron
-            for (int i = 1; i <= max; ++i) {
+            for (int i = 1; i <= numberOfPages; ++i) {
                 try {
                     Document pageList = Jsoup.connect(url + i).get();
 
                     List<String> hrefs = getAdvertLinks(pageList);
 
-                    if (!hrefs.isEmpty() && !ONE_ADVERT_ONLY) {
+                    if (!hrefs.isEmpty() ) {
                         hrefs.forEach(href -> {
-                            sleep();//TODO randomizer
                             try {
                                 Document advertDoc = Jsoup.connect(href).get();
                                 Adverts advert = new Adverts();
@@ -71,14 +81,6 @@ public class SearchService {
                                 LOG.info(e.getMessage());
                             }
                         });
-                    } else if (!hrefs.isEmpty()) {
-                        //TEMPORARY FOR TEST
-                        Document advertDoc = Jsoup.connect(hrefs.get(0)).get();
-                        Adverts advert = new Adverts();
-                        populateModelData(form, advert);
-                        advertParser.populate(advertDoc, advert);
-                        adverts.add(advert);
-                        advertsRepository.save(advert);
                     }
                 } catch (IOException e) {
                     LOG.info(e.getMessage());
@@ -89,26 +91,6 @@ public class SearchService {
         }
         adverts.addAll(databaseAdverts);
         return adverts;
-    }
-
-    private void sleep() {
-        Random r = new Random();
-        int low = 1;
-        int high = 4;
-        int result = r.nextInt(high-low) + low;
-        int ms = result * 500;
-        try {
-            Thread.sleep((long) (ms));
-        } catch (InterruptedException e) {
-            LOG.info(e.getMessage());
-        }
-    }
-    private void wait3() {
-        try {
-            Thread.sleep((long) (180000));
-        } catch (InterruptedException e) {
-            LOG.info(e.getMessage());
-        }
     }
 
     private int getNumberOfPages(Document doc) {

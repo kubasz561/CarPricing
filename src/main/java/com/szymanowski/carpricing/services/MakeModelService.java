@@ -12,11 +12,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * Serwis odpowiada za pobranie z bazy danych informacji na temat dostępnych marek, modeli oraz wersji pojazdów.
+ */
 @Service
 public class MakeModelService {
     @Autowired
     MakeModelRepository makeModelRepository;
 
+    /**
+     * Pobiera z bazy dostępne marki pojazdu
+     * @return lista dostępnych marek pojazdu
+     */
     public List<String> getAllMakes(){
          return StreamSupport.stream(makeModelRepository.findAll().spliterator(), false)
                  .map(MakeModel::getMake)
@@ -24,12 +31,25 @@ public class MakeModelService {
                  .collect(Collectors.toList());
 
     }
+
+    /**
+     * Pobiera z bazy dostępne modele pojazdu dla danej marki
+     * @param make - marka pojazdu
+     * @return lista dostępnych modeli dla podanej marki
+     */
     public List<String> getModelsForMake(String make){
         return makeModelRepository.findByMake(make).stream()
                 .map(MakeModel::getModel)
                 .distinct()
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Pobiera z bazy dostępne wersje pojazdu dla danego modelu i marki
+     * @param make - marka pojazdu
+     * @param model - model pojazdu
+     * @return lista dostępnych wersji pojazdu dla podanego modelu i marki
+     */
     public List<String> getVersionForMakeModel(String make, String model){
         Optional<String> version = makeModelRepository.findByMakeAndModel(make, model).stream()
                 .findFirst()

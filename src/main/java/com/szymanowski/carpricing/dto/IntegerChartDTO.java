@@ -2,6 +2,9 @@ package com.szymanowski.carpricing.dto;
 
 import java.util.List;
 
+/**
+ * Przechowuje dane wykresów regresji.
+ */
 public class IntegerChartDTO extends ChartDTO {
     private List<Integer> advertX;
     private Integer formX;

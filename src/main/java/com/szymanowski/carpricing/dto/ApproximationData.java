@@ -4,6 +4,9 @@ import com.szymanowski.carpricing.services.ParametersInfo;
 
 import java.util.List;
 
+/**
+ * Przechowuje dane zwrócone przez ApproximationService.
+ */
 public class ApproximationData {
     private List<ChartDTO> charts;
     private ParametersInfo parametersInfo;

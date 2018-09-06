@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import $ from "jquery";
 
+/**
+ * Komponent zawierający formularz danych pojazdu i metody wyceny oraz logikę jego wysyłania do serwera.
+ * Z jego poziomu odbywają się zapytania o dostępne marki, modele oraz wersje pojazdu.
+ */
 export default class CarForm extends Component {
     constructor(props) {
         super(props);
@@ -43,6 +47,9 @@ export default class CarForm extends Component {
         this.getMake()
     }
 
+    /**
+     * Główna metoda reactowa odpowiadająca za rendering komponentu
+     */
     render() {
         return (
             <form onSubmit={this.submit} name="theForm">
@@ -242,6 +249,10 @@ export default class CarForm extends Component {
     getTypeList (){
         return ["Sedan","Kombi","Kompakt","SUV","Coupe","Auta miejskie","Auta małe","Minivan"];
     }
+
+    /**
+     * Wysyłanie zapytania o wycenę pod adres /api/search
+     */
     submit(e) {
         if(this.validateForm()) {
             this.setState({loading: true, message: null});
@@ -265,6 +276,9 @@ export default class CarForm extends Component {
         }
     }
 
+    /**
+     * Zapytanie o dostępne marki pojazdu
+     */
     getMake() {
         let _this2 = this;
         $.ajax({
@@ -275,6 +289,10 @@ export default class CarForm extends Component {
             }
         });
     }
+
+    /**
+     * Zapytanie o dostępne modele pojazdu
+     */
     getModel(e) {
         e.preventDefault();
         let _this2 = this;
@@ -289,6 +307,10 @@ export default class CarForm extends Component {
             }
         });
     }
+
+    /**
+     * Zapytanie o dostępne wersje pojazdu
+     */
     getVersion(e){
         e.preventDefault();
         let _this2 = this;
@@ -303,6 +325,9 @@ export default class CarForm extends Component {
         });
     }
 
+    /**
+     * Walidacja poprawności formularza
+     */
     validateForm() {
         let result = true;
         if (!this.state.model || !this.state.make) {

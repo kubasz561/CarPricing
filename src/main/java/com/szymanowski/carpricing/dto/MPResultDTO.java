@@ -1,6 +1,9 @@
 package com.szymanowski.carpricing.dto;
 
 
+/**
+ * Przechowuje dane zwracane w odpowiedzi serwera na metodę search, czyli wszystkie dane dotyczące wyceny.
+ */
 public class MPResultDTO {
     private double totalDiff;
     private int filteredAdvertsCount;

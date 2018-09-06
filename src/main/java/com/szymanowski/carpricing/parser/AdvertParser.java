@@ -10,8 +10,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Klasa odpowiada za parsowanie kodu HTML i zapisywanie informacji o pojeździe w obiekcie typu Adverts.
+ */
 @Component
 public class AdvertParser {
+
+    /**
+     * Metoda parsuje dokument DOM ogłoszenia zawarty w obiekcie doc i zapisuje go do obiektu target typu Adverts
+     */
     public void populate(Document doc, Adverts target){
         Elements title = doc.getElementsByClass("offer-title");
         Elements price = doc.getElementsByClass("offer-price__number");

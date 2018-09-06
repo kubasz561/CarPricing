@@ -1,5 +1,8 @@
 package com.szymanowski.carpricing.constants;
 
+/**
+ * Typ wyliczeniowy rodzaju wyceny
+ */
 public enum ApproximationMethod {
     WEIGHTED_MEAN("WEIGHTED_MEAN"),
     MAX_PRICE("MAX_PRICE");
